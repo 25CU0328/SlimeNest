@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\Player">
+      <UniqueIdentifier>{98ce2e15-dfc7-4201-b26b-f37cbdbe2a90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Player\State">
+      <UniqueIdentifier>{e59b72b9-2345-41a1-95ac-cee922f0643e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Tilemap">
+      <UniqueIdentifier>{5944d3db-3f16-4189-be62-a5e117d2493e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Mst">
+      <UniqueIdentifier>{b7f9698a-f043-4b29-b88c-b36e629b9e98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameObjectMng">
+      <UniqueIdentifier>{99bcc1ac-7808-414d-a4ac-23879d1b77fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Weapon">
+      <UniqueIdentifier>{0bea77c4-9e09-44a5-8c05-2f41bf7d0041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{d917646c-7ca2-412f-aa5e-4fe522d14cfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GamePlayData">
+      <UniqueIdentifier>{213ec624-a376-41a1-8138-f993307da0f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Enemy">
+      <UniqueIdentifier>{f772e17c-32fa-4d0b-a8eb-7e1b4783315a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{0832ccbe-13b1-4104-860f-2ef4894f4558}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\App.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\Player.cpp">
+      <Filter>ソース ファイル\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\PlayerState.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\StateAttack.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\StateCharging.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\StateDamaged.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\StateDead.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\StateMng.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\StateMoving.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\StateWater.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tilemap\Tilemap.cpp">
+      <Filter>ソース ファイル\Tilemap</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Mst\StageDataMst.cpp">
+      <Filter>ソース ファイル\Mst</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjectMng\GameObjectMng.cpp">
+      <Filter>ソース ファイル\GameObjectMng</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Weapon\Sword.cpp">
+      <Filter>ソース ファイル\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Scene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneGameClear.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneGameOver.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneInGame.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneMng.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneStageSelect.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneTitle.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GamePlayData\GamePlayData.cpp">
+      <Filter>ソース ファイル\GamePlayData</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\EnemyMng.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\EnemyPool.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Ghost.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Onibi.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Skull.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Slime.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\HpGauge.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\HpGauge2.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIMng.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\App.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AppDef.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\Player.h">
+      <Filter>ソース ファイル\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\PlayerState.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateAttack.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateCharging.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateDamaged.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateDead.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateDef.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateMng.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateMoving.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateWater.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameDef.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Position.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tilemap\Tilemap.h">
+      <Filter>ソース ファイル\Tilemap</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Mst\StageData.h">
+      <Filter>ソース ファイル\Mst</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Mst\StageDataMst.h">
+      <Filter>ソース ファイル\Mst</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjectMng\GameObjectMng.h">
+      <Filter>ソース ファイル\GameObjectMng</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Weapon\Sword.h">
+      <Filter>ソース ファイル\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Scene.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneGameClear.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneGameOver.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneInGame.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneMng.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneStageSelect.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneTitle.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GamePlayData\GamePlayData.h">
+      <Filter>ソース ファイル\GamePlayData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Enemy.h">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\EnemyMng.h">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\EnemyPool.h">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Ghost.h">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Onibi.h">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Skull.h">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Slime.h">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\HpGauge.h">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\HpGauge2.h">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIMng.h">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyDef.h">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

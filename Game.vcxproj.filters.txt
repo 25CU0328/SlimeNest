@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Source\App.cpp" />
+    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Tilemap\Tilemap.cpp">
+      <Filter>Tilemap</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjectMng\GameObjectMng.cpp">
+      <Filter>GameObjectMng</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Weapon\Sword.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Slime.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\App.h" />
+    <ClInclude Include="Source\AppDef.h" />
+    <ClInclude Include="Source\Tilemap\Tilemap.h">
+      <Filter>Tilemap</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjectMng\GameObjectMng.h">
+      <Filter>GameObjectMng</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameDef.h" />
+    <ClInclude Include="Source\Weapon\Sword.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Slime.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Tilemap">
+      <UniqueIdentifier>{cbcc518a-a9d2-4b19-b4e1-60b0fbf8c636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{65f7f3d9-f1bf-4f6e-b511-afb96e75a018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectMng">
+      <UniqueIdentifier>{ccab769f-a55e-45b3-89a4-bd3db477ee83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon">
+      <UniqueIdentifier>{47fda968-e7cd-4227-be57-820a9d5cecec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy">
+      <UniqueIdentifier>{be5b1828-222f-4df5-8d75-16007a8bac0d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

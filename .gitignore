@@ -1,0 +1,5 @@
+*.sln
+Framework/
+Build/
+実行ファイル/
+/.vs
