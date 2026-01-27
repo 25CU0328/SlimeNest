@@ -1,59 +1,59 @@
-#include "Skull.h"
-//Time_I‚ğg‚¤‚Ì‚Åinclude 
+ï»¿#include "Skull.h"
+//Time_Iã‚’ä½¿ã†ã®ã§include 
 #include "Fwk/Framework.h" 
-//EnemyMng‚ğg‚¤‚Ì‚Åinclude 
+//EnemyMngã‚’ä½¿ã†ã®ã§include 
 #include "GameObjectMng/GameObjectMng.h" 
 
-//‰Šú‰» 
+//åˆæœŸåŒ– 
 void Skull::Init()
 {
-    //“G‹¤’Ê‚Ì‰Šú‰»ˆ— 
+    //æ•µå…±é€šã®åˆæœŸåŒ–å‡¦ç† 
     Enemy::Init();
 
-    //ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ 
+    //ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿ 
     mTexture.Load("Images/2dAction/skull.png");
 
-    //ƒXƒvƒ‰ƒCƒg‚Ì‰Šú‰» 
+    //ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åˆæœŸåŒ– 
     mSprite.Init();
-    //ƒeƒNƒXƒ`ƒƒ‚Ìİ’è 
+    //ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š 
     mSprite.SetTexture(mTexture);
-    //ƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒYİ’è 
+    //ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºè¨­å®š 
     mSprite.SetSize(64.0f, 64.0f);
 
-    //Õ“ËŒ`óiƒRƒ‰ƒCƒ_[j‚Ìİ’è 
+    //è¡çªå½¢çŠ¶ï¼ˆã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ï¼‰ã®è¨­å®š 
     {
-        //ƒ^ƒO‚ğİ’è 
+        //ã‚¿ã‚°ã‚’è¨­å®š 
         mCollider.SetTag("Skull");
-        //Œ`ó‚ğw’è 
+        //å½¢çŠ¶ã‚’æŒ‡å®š 
         mCollider.SetCircle(0.0f, 0.0f, 20.0f);
     }
 
-    //ƒAƒjƒ[ƒVƒ‡ƒ“‚ğ‰Šú‰» 
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’åˆæœŸåŒ– 
     _initAnimation();
 
-    //HP‚ğİ’è 
+    //HPã‚’è¨­å®š 
     mHP = 3;
-    //ƒ^ƒCƒ}[‰Šú‰» 
+    //ã‚¿ã‚¤ãƒãƒ¼åˆæœŸåŒ– 
     mTimer = 0.0f;
-    //Œü‚« 
+    //å‘ã 
     mDirection = Direction::Left;
-    //‰Šúó‘Ô 
+    //åˆæœŸçŠ¶æ…‹ 
     mStatus = Status::Moving;
 }
 
-//XV 
+//æ›´æ–° 
 void Skull::Update()
 {
-    //ƒAƒNƒeƒBƒu‚Å‚È‚¯‚ê‚ÎXVˆ—‚Ís‚í‚È‚¢ 
+    //ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã§ãªã‘ã‚Œã°æ›´æ–°å‡¦ç†ã¯è¡Œã‚ãªã„ 
     if (!IsActive()) {
         return;
     }
 
     switch (mStatus) {
-    case Status::Moving: //ˆÚ“®ó‘Ô‚Ìˆ— 
+    case Status::Moving: //ç§»å‹•çŠ¶æ…‹ã®å‡¦ç† 
         _updateMoving();
         break;
-    case Status::Idle:   //‘Ò‹@ó‘Ô‚Ìˆ— 
+    case Status::Idle:   //å¾…æ©ŸçŠ¶æ…‹ã®å‡¦ç† 
         _updateIdle();
         break;
     }
@@ -61,126 +61,126 @@ void Skull::Update()
     Enemy::Update();
 }
 
-//ˆÚ“®ó‘Ô‚ÌXVˆ— 
+//ç§»å‹•çŠ¶æ…‹ã®æ›´æ–°å‡¦ç† 
 void Skull::_updateMoving() {
 
-    //‰Á‘¬“x‚ÌXV 
+    //åŠ é€Ÿåº¦ã®æ›´æ–° 
     _updateVelocity();
 
-    //ˆÊ’u‚ÌXV 
+    //ä½ç½®ã®æ›´æ–° 
     mPosition += mVelocity;
 
-    //Ú’nŠm”F—p‚Ì‹éŒ`‚Ì’†S“_‚ğ©•ª‚Ì‘«Œ³‚Éİ’è 
+    //æ¥åœ°ç¢ºèªç”¨ã®çŸ©å½¢ã®ä¸­å¿ƒç‚¹ã‚’è‡ªåˆ†ã®è¶³å…ƒã«è¨­å®š 
     Vector2f vCheckPos = mPosition + Vector2f(0.0f, -20.0f);
-    //Õ“Ë”»’è—p‚Ì‹éŒ`‚Ì•‚Æ‚‚³ 
+    //è¡çªåˆ¤å®šç”¨ã®çŸ©å½¢ã®å¹…ã¨é«˜ã• 
     float CollisionWidth = 40.0f;
     float CollisionHeight = 1.0f;
-    //’n–Ê‚É‚Â‚¢‚Ä‚¢‚é‚©Šm”F‚·‚é 
+    //åœ°é¢ã«ã¤ã„ã¦ã„ã‚‹ã‹ç¢ºèªã™ã‚‹ 
     bool isGround = GetMap()->IsInsideWall(vCheckPos, CollisionWidth, CollisionHeight);
 
-    //’…’n‚µ‚Ä‚¢‚½ê‡ 
+    //ç€åœ°ã—ã¦ã„ãŸå ´åˆ 
     if (isGround) {
 
-        //YÀ•W‚ğ’²®.‚ª‚¢‚±‚Â‚ÌÕ“Ë”ÍˆÍ‚Ì‰º•Ó‚Æƒ^ƒCƒ‹‚Ìã•Ó‚ªd‚È‚é‚æ‚¤‚É‚·‚é 
+        //Yåº§æ¨™ã‚’èª¿æ•´.ãŒã„ã“ã¤ã®è¡çªç¯„å›²ã®ä¸‹è¾ºã¨ã‚¿ã‚¤ãƒ«ã®ä¸Šè¾ºãŒé‡ãªã‚‹ã‚ˆã†ã«ã™ã‚‹ 
         {
-            //ƒ^ƒCƒ‹ƒTƒCƒYæ“¾ 
+            //ã‚¿ã‚¤ãƒ«ã‚µã‚¤ã‚ºå–å¾— 
             const float tileSize = GetMap()->GetTileSize();
-            //Õ“Ë‚µ‚½ƒ^ƒCƒ‹‚Ìs”‚ğŒvZ 
+            //è¡çªã—ãŸã‚¿ã‚¤ãƒ«ã®è¡Œæ•°ã‚’è¨ˆç®— 
             int hitTileRow = (int)((vCheckPos.y - CollisionHeight) / tileSize);
-            //Õ“Ë‚µ‚½ƒ^ƒCƒ‹‚Ìã•Ó‚Ì‚xÀ•W 
+            //è¡çªã—ãŸã‚¿ã‚¤ãƒ«ã®ä¸Šè¾ºã®ï¼¹åº§æ¨™ 
             float hitTileY = hitTileRow * tileSize;
-            //YÀ•W‚ğ’²® 
-            //Õ“Ë‚µ‚½ƒ^ƒCƒ‹‚Ìã•Ó‚Ì‚xÀ•W + Õ“Ë‹éŒ`‚Ì‚‚³‚Ì”¼•ª 
+            //Yåº§æ¨™ã‚’èª¿æ•´ 
+            //è¡çªã—ãŸã‚¿ã‚¤ãƒ«ã®ä¸Šè¾ºã®ï¼¹åº§æ¨™ + è¡çªçŸ©å½¢ã®é«˜ã•ã®åŠåˆ† 
             mPosition.y = hitTileY + 20.0f;
         }
 
-        //Œo‰ßŠÔŒv‘ª—p‚Ìƒ^ƒCƒ}[‚ğƒŠƒZƒbƒg 
+        //çµŒéæ™‚é–“è¨ˆæ¸¬ç”¨ã®ã‚¿ã‚¤ãƒãƒ¼ã‚’ãƒªã‚»ãƒƒãƒˆ 
         mTimer = 0.0f;
-        //ƒAƒCƒhƒ‹ƒAƒjƒ‚ğÄ¶ 
+        //ã‚¢ã‚¤ãƒ‰ãƒ«ã‚¢ãƒ‹ãƒ¡ã‚’å†ç”Ÿ 
         mSprite.PlayAnimation("idle");
-        //‘Ò‹@ó‘Ô‚É‘JˆÚ 
+        //å¾…æ©ŸçŠ¶æ…‹ã«é·ç§» 
         mStatus = Status::Idle;
     }
 }
 
-//‘Ò‚¿ó‘Ô‚ÌXVˆ— 
+//å¾…ã¡çŠ¶æ…‹ã®æ›´æ–°å‡¦ç† 
 void Skull::_updateIdle() {
 
-    //ƒvƒŒƒCƒ„[‚ÌˆÊ’u 
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½® 
     Vector2f playerPos = GetPlayer()->GetPosition();
 
-    //Œü‚«‚ÌXV 
+    //å‘ãã®æ›´æ–° 
     mDirection = (playerPos.x < mPosition.x) ? Direction::Left : Direction::Right;
     mSprite.SetFlipX(mDirection == Direction::Right);
-    //‘Ò‹@ŠÔ(1.0f•b)Œo‰ß‚µ‚Ä‚¢‚é‚©Šm”F 
+    //å¾…æ©Ÿæ™‚é–“(1.0fç§’)çµŒéã—ã¦ã„ã‚‹ã‹ç¢ºèª 
     if (mTimer < 1.0f) {
-        //Œo‰ßŠÔ‚ÌŒv‘ª 
+        //çµŒéæ™‚é–“ã®è¨ˆæ¸¬ 
         mTimer += Time_I->GetDeltaTime();
     }
     else {
-        //1•bŒo‰ß‚µ‚Ä‚¢‚½ê‡ 
+        //1ç§’çµŒéã—ã¦ã„ãŸå ´åˆ 
 
-        //ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£‚ªˆê’èˆÈ“à‚Å‚ ‚ê‚Î 
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®è·é›¢ãŒä¸€å®šä»¥å†…ã§ã‚ã‚Œã° 
         if ((playerPos - mPosition).GetLength() <= 160.0f) {
-            ///ƒWƒƒƒ“ƒv‚·‚éiãŒü‚«‚Ì‰Á‘¬‚ğİ’è‚·‚éj 
+            ///ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹ï¼ˆä¸Šå‘ãã®åŠ é€Ÿã‚’è¨­å®šã™ã‚‹ï¼‰ 
             mVelocity.y = 16.0f;
-            //ƒWƒƒƒ“ƒvƒAƒjƒ‚ğÄ¶ 
+            //ã‚¸ãƒ£ãƒ³ãƒ—ã‚¢ãƒ‹ãƒ¡ã‚’å†ç”Ÿ 
             mSprite.PlayAnimation("jump");
-            //ˆÚ“®ó‘Ô‚É‘JˆÚ 
+            //ç§»å‹•çŠ¶æ…‹ã«é·ç§» 
             mStatus = Status::Moving;
         }
     }
 }
 
-//‰Á‘¬“x‚ÌXV 
+//åŠ é€Ÿåº¦ã®æ›´æ–° 
 void Skull::_updateVelocity() {
-    //d—Í‚Ì”{—¦ 
+    //é‡åŠ›ã®å€ç‡ 
     float gravityScale = 5.0f;
-    //‚±‚ÌƒtƒŒ[ƒ€‚Å‚Ìd—Í‰Á‘¬—ÊB 
+    //ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã®é‡åŠ›åŠ é€Ÿé‡ã€‚ 
     float gravity = -9.8f * Time_I->GetDeltaTime() * gravityScale;
-    //‚±‚ÌƒtƒŒ[ƒ€‚Å‚ÌÅ‘åd—ÍB 
+    //ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã®æœ€å¤§é‡åŠ›ã€‚ 
     float maxGravity = -1200.0f * Time_I->GetDeltaTime();
 
-    //d—Í‚ÌŒvZ 
+    //é‡åŠ›ã®è¨ˆç®— 
     mVelocity.y += gravity;
     if (mVelocity.y < maxGravity) {
         mVelocity.y = maxGravity;
     }
 }
 
-//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì‰Šú‰» 
+//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆæœŸåŒ– 
 void Skull::_initAnimation() {
-    //ƒWƒƒƒ“ƒv‚ÌƒAƒjƒ‚ğ’Ç‰Á 
+    //ã‚¸ãƒ£ãƒ³ãƒ—æ™‚ã®ã‚¢ãƒ‹ãƒ¡ã‚’è¿½åŠ  
     {
-        //0“x¨360“x‚Ì‰ñ“]ƒAƒjƒ[ƒVƒ‡ƒ“ 
+        //0åº¦â†’360åº¦ã®å›è»¢ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ 
         float rotDeg[] = {
             0.0f,
             360.0f,
         };
         Animation animJumping;
-        //‰ñ“]ƒAƒjƒ‚ğ¶¬BƒtƒŒ[ƒ€”‚Í‚QB0.75•b‚Åˆê‰ñ“]Aƒ‹[ƒv‚ÍON, 
+        //å›è»¢ã‚¢ãƒ‹ãƒ¡ã‚’ç”Ÿæˆã€‚ãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã¯ï¼’ã€‚0.75ç§’ã§ä¸€å›è»¢ã€ãƒ«ãƒ¼ãƒ—ã¯ON, 
         CreateAnimationRotation(animJumping, "jump", 2, 0.75, true, rotDeg);
-        //Sprite‚É‚â‚ç‚ê‚½‚ÉƒAƒjƒ‚ğ’Ç‰Á 
+        //Spriteã«ã‚„ã‚‰ã‚ŒãŸæ™‚ã«ã‚¢ãƒ‹ãƒ¡ã‚’è¿½åŠ  
         mSprite.AddAnimation(animJumping);
     }
 
-    //ƒAƒCƒhƒ‹‚ÌƒAƒjƒ‚ğ’Ç‰Á 
+    //ã‚¢ã‚¤ãƒ‰ãƒ«æ™‚ã®ã‚¢ãƒ‹ãƒ¡ã‚’è¿½åŠ  
     {
-        //‰ñ“]‚ğ0“x‚É–ß‚·‚¾‚¯‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ 
+        //å›è»¢ã‚’0åº¦ã«æˆ»ã™ã ã‘ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ 
         float rotDeg[] = {
             0.0f
         };
         Animation animIdle;
-        //‰ñ“]ƒAƒjƒ‚ğ¶¬BƒtƒŒ[ƒ€”‚Í1B0•b.ƒ‹[ƒv‚È‚µ, 
+        //å›è»¢ã‚¢ãƒ‹ãƒ¡ã‚’ç”Ÿæˆã€‚ãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã¯1ã€‚0ç§’.ãƒ«ãƒ¼ãƒ—ãªã—, 
         CreateAnimationRotation(animIdle, "idle", 1, 0.0, false, rotDeg);
-        //Sprite‚É‚â‚ç‚ê‚½‚ÉƒAƒjƒ‚ğ’Ç‰Á 
+        //Spriteã«ã‚„ã‚‰ã‚ŒãŸæ™‚ã«ã‚¢ãƒ‹ãƒ¡ã‚’è¿½åŠ  
         mSprite.AddAnimation(animIdle);
     }
 }
 
-//‚â‚ç‚ê‚½‚Æ‚«‚ÉŒÄ‚Ño‚³‚ê‚é 
+//ã‚„ã‚‰ã‚ŒãŸã¨ãã«å‘¼ã³å‡ºã•ã‚Œã‚‹ 
 void Skull::OnDefeated() {
-    //‚â‚ç‚ê‚½‚ç‹S‰Î‚ğì‚èo‚· 
+    //ã‚„ã‚‰ã‚ŒãŸã‚‰é¬¼ç«ã‚’ä½œã‚Šå‡ºã™ 
     Vector2f pos = mPosition;
     pos.y += 64.0f;
     GetEnemyMng()->CreateEnemy("Onibi", pos);

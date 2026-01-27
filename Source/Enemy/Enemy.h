@@ -1,74 +1,105 @@
-#pragma once 
+ï»¿#pragma once 
 
-// (“G)Šî’êƒNƒ‰ƒX 
+// (æ•µ)åŸºåº•ã‚¯ãƒ©ã‚¹ 
 
-// Sprite‚âTexture,Animation‚ğg‚¤‚½‚ß‚Ìƒwƒbƒ_ƒtƒ@ƒCƒ‹ 
+// Spriteã‚„Texture,Animationã‚’ä½¿ã†ãŸã‚ã®ãƒ˜ãƒƒãƒ€ãƒ•ã‚¡ã‚¤ãƒ« 
 #include "Fwk/Graphics.h" 
 
-// Vector2fƒNƒ‰ƒX‚ğg‚¤‚½‚ß‚Ìƒwƒbƒ_ƒtƒ@ƒCƒ‹ 
+// Vector2fã‚¯ãƒ©ã‚¹ã‚’ä½¿ã†ãŸã‚ã®ãƒ˜ãƒƒãƒ€ãƒ•ã‚¡ã‚¤ãƒ« 
 #include "Lib/Math/Vector.h" 
 using namespace Lib::Math;
 
-// Õ“ËŒ`óƒNƒ‰ƒX‚ğg‚¤‚Ì‚Åinclude 
+// è¡çªå½¢çŠ¶ã‚¯ãƒ©ã‚¹ã‚’ä½¿ã†ã®ã§include 
 #include "Fwk/Collision/Collider.h" 
-// Õ“ËŠÖ˜AƒNƒ‰ƒX‚Ì–¼‘O‹óŠÔ‚ğg‚¤ 
+// è¡çªé–¢é€£ã‚¯ãƒ©ã‚¹ã®åå‰ç©ºé–“ã‚’ä½¿ã† 
 using namespace Fwk::Collision;
 
-// ‰¹Œ¹ƒNƒ‰ƒX‚ğ#include
+// éŸ³æºã‚¯ãƒ©ã‚¹ã‚’#include
 #include "Fwk/Audio/SoundSource.h" 
-// Waveƒtƒ@ƒCƒ‹‚ğˆµ‚¤ƒNƒ‰ƒX‚ğ#include 
+// Waveãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ‰±ã†ã‚¯ãƒ©ã‚¹ã‚’#include 
 #include "Fwk/Audio/WaveSound.h" 
+
+// ã‚¨ãƒãƒŸãƒ¼çŠ¶æ…‹ã‚’ä½¿ã†ãŸã‚ã«include
+#include "GameDef.h"
 
 class Enemy
 {
 public:
-	// ‰Šú‰» 
+	// åˆæœŸåŒ– 
 	virtual void Init();
-	// Œã•Ğ•t‚¯ 
+	// å¾Œç‰‡ä»˜ã‘ 
 	virtual void Term();
-	// XV 
+	// æ›´æ–° 
 	virtual void Update();
-	// •`‰æ 
+	// æç”» 
 	virtual void Render();
 
-	// ƒAƒNƒeƒBƒu‚©H 
+	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‹ï¼Ÿ 
 	bool IsActive();
-	// ƒAƒNƒeƒBƒuó‘Ô‚Ìİ’è 
+	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã®è¨­å®š 
 	void SetActive(bool isActive);
 
-	// Œ»İˆÊ’u‚ğæ“¾ 
+	// ç¾åœ¨ä½ç½®ã‚’å–å¾— 
 	Vector2f GetPosition();
-	// Œ»İˆÊ’u‚ğİ’è 
+	// ç¾åœ¨ä½ç½®ã‚’è¨­å®š 
 	void SetPosition(Vector2f position);
 
-	// ƒ_ƒ[ƒW‚ğó‚¯‚é 
+	// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹ 
 	virtual void OnDamaged(int damage);
 
-	// ¶¬‚³‚ê‚½‚ÉŒÄ‚Ño‚· 
-	// ”h¶ƒNƒ‰ƒX‚Åã‘‚«‚µ‚Äg‚¤ 
+	// ç”Ÿæˆã•ã‚ŒãŸæ™‚ã«å‘¼ã³å‡ºã™ 
+	// æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã§ä¸Šæ›¸ãã—ã¦ä½¿ã† 
 	virtual void OnCreated();
 	
-	// ‚â‚ç‚ê‚½‚Æ‚«‚ÉŒÄ‚Ñ‚³‚ê‚é 
-	// ”h¶ƒNƒ‰ƒX‚Åã‘‚«‚µ‚Äg‚¤ 
+	// ã‚„ã‚‰ã‚ŒãŸã¨ãã«å‘¼ã³ã•ã‚Œã‚‹ 
+	// æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã§ä¸Šæ›¸ãã—ã¦ä½¿ã† 
 	virtual void OnDefeated();
 
+	// ãƒ‘ãƒˆãƒ­ãƒ¼ãƒ«çŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
+	virtual void UpdatePatrol();
+
+	// æ”»æ’ƒçŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
+	virtual void UpdateAttack();
+
+	// ãƒ•ã‚¡ãƒ­ãƒ¼çŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
+	virtual void UpdateFollow();
+
+	// è­¦æˆ’çŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
+	virtual void UpdateAlert();
 protected:
-	// ƒAƒNƒeƒBƒuó‘Ô‚©”Û‚© 
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¦–ç·šã«å…¥ã£ãŸæ™‚ã¨é›¢ã‚ŒãŸæ™‚ã®å‡¦ç†
+	void _onPlayerFound(const CollisionEvent& collisionEvent);
+
+#pragma region Variables
+	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã‹å¦ã‹ 
 	bool mIsActive;
-	// •`‰æ—pƒeƒNƒXƒ`ƒƒ 
+	// æç”»ç”¨ãƒ†ã‚¯ã‚¹ãƒãƒ£ 
 	Texture mTexture;
-	// •`‰æ—pƒXƒvƒ‰ƒCƒg 
+	// æç”»ç”¨ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ 
 	Sprite mSprite;
-	// Œ»İ‚ÌˆÊ’u 
+	// ç¾åœ¨ã®ä½ç½® 
 	Vector2f mPosition;
-	// Õ“ËŒ`ó 
+	// è‡ªåˆ†ã®ä½“ã®è¡çªå½¢çŠ¶ 
 	Collider mCollider;
-	// ‘Ì—Í 
-	int mHP;
-	// ƒ_ƒ[ƒW‚É‰ÁZ‚·‚éÔF‚Ì‹­‚³i0.0`1.0) 
-	float mDamagedColor;
-	// Œø‰Ê‰¹ 
+	
+	// è¦–ç·šã‚’è¡¨ã™è¡çªå½¢çŠ¶
+	Collider mViewCollider;
+	// æ•µã®çŠ¶æ…‹ã‚’è¡¨ã™å¤‰æ•°
+	EnemyState mState;
+	// ã‚¨ãƒãƒŸãƒ¼ã®å‘ãã‚’è¡¨ã™å¤‰æ•°
+	Direction mDirection;
+
+	// ç§»å‹•é€Ÿåº¦ã®æœ€å¤§å€¤
+	float mMaxVelocity;
+	// ç§»å‹•é€Ÿåº¦
+	float mVelocity;
+
+	// ãƒ•ã‚¡ãƒ­ãƒ¼çŠ¶æ…‹ã®ç¶™ç¶šæ™‚é–“
+	float mFollowTime;
+
+	// åŠ¹æœéŸ³ 
 	WaveSound mSound;
-	// ‰¹Œ¹ 
+	// éŸ³æº 
 	SoundSource mSoundSource;
+#pragma endregion
 };

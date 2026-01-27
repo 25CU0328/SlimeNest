@@ -1,44 +1,44 @@
-#pragma once 
+ï»¿#pragma once 
 
-//(“G)‚ª‚¢‚±‚ÂƒNƒ‰ƒX 
+//(æ•µ)ãŒã„ã“ã¤ã‚¯ãƒ©ã‚¹ 
 
-//eƒNƒ‰ƒX 
+//è¦ªã‚¯ãƒ©ã‚¹ 
 #include "Enemy.h" 
-//—ñ‹“Œ^Direction‚ğg‚¤‚Ì‚Å#include 
+//åˆ—æŒ™å‹Directionã‚’ä½¿ã†ã®ã§#include 
 #include "GameDef.h" 
 
 class Skull : public Enemy
 {
 	enum Status {
-		Moving, //ˆÚ“®’† 
-		Idle, //‘Ò‹@’† 
+		Moving, //ç§»å‹•ä¸­ 
+		Idle, //å¾…æ©Ÿä¸­ 
 	};
 
 public:
-	//‰Šú‰» 
+	//åˆæœŸåŒ– 
 	void Init();
-	//XV 
+	//æ›´æ–° 
 	void Update();
 
 private:
-	//ˆÚ“®ó‘Ô‚ÌXVˆ— 
+	//ç§»å‹•çŠ¶æ…‹ã®æ›´æ–°å‡¦ç† 
 	void _updateMoving();
-	//‘Ò‹@ó‘Ô‚ÌXVˆ— 
+	//å¾…æ©ŸçŠ¶æ…‹ã®æ›´æ–°å‡¦ç† 
 	void _updateIdle();
-	//‰Á‘¬“x‚ÌXV 
+	//åŠ é€Ÿåº¦ã®æ›´æ–° 
 	void _updateVelocity();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì‰Šú‰» 
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆæœŸåŒ– 
 	void _initAnimation();
-	//‚â‚ç‚ê‚½‚Æ‚«‚ÉŒÄ‚Ño‚³‚ê‚é 
+	//ã‚„ã‚‰ã‚ŒãŸã¨ãã«å‘¼ã³å‡ºã•ã‚Œã‚‹ 
 	void OnDefeated();
 
 private:
-	//ó‘Ô 
+	//çŠ¶æ…‹ 
 	Status mStatus;
-	//Œo‰ßŠÔ 
+	//çµŒéæ™‚é–“ 
 	float mTimer;
-	//‰Á‘¬“x 
+	//åŠ é€Ÿåº¦ 
 	Vector2f mVelocity;
-	//Œ»İ‚ÌŒü‚« 
+	//ç¾åœ¨ã®å‘ã 
 	Direction mDirection;
 };

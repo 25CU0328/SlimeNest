@@ -47,7 +47,7 @@ void Player::Init() {
 
 		// 衝突対象を追加
 		mCollider.AddHitGroup((int)CollisionGroup::Enemy);
-		mCollider.AddHitGroup((int)CollisionGroup::Goal);
+		mCollider.AddHitGroup((int)CollisionGroup::View);
 
 		// コライダーのタグを設定
 		mCollider.SetTag("Player");
@@ -341,6 +341,7 @@ bool Player::IsReachedGoal() {
 	return (mStatus == Status::Goal);
 }
 
+// スプライトを取得する
 Sprite* Player::GetSprite()
 {
 	return &mSprite;

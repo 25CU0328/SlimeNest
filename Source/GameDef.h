@@ -20,6 +20,7 @@ enum class CollisionGroup {
 	Player,
 	Weapon,
 	Enemy,
+	View,
 	Goal,
 };
 
@@ -31,4 +32,15 @@ enum class SceneType {
 	GameOver,
 	GameClear,
 	StageSelect,
+};
+
+// 敵の状態を表す列挙型
+enum class EnemyState
+{
+	None = -1,
+	Patrol, // パトロール中, 特定なルートに移動する
+	Alert,	// 警戒している
+	Follow,	// プレイヤーをファロー
+	Attack,	// プレイヤーを攻撃する
+
 };

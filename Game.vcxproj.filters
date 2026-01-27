@@ -144,6 +144,9 @@
     <ClCompile Include="Source\UI\UIMng.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Enemy\Archer.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App.h">
@@ -257,7 +260,7 @@
     <ClInclude Include="Source\UI\UIMng.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyDef.h">
+    <ClInclude Include="Source\Enemy\Archer.h">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

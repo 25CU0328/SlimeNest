@@ -1,38 +1,38 @@
-#pragma once 
+ï»¿#pragma once 
 
-// (“G)ƒXƒ‰ƒCƒ€ƒNƒ‰ƒX 
+// (æ•µ)ã‚¹ãƒ©ã‚¤ãƒ ã‚¯ãƒ©ã‚¹ 
 
-// eƒNƒ‰ƒX 
+// è¦ªã‚¯ãƒ©ã‚¹ 
 #include "Enemy.h" 
 
-// Direction‚Ì’è”‚ğg‚¢‚½‚¢‚Ì‚Å#include 
+// Directionã®å®šæ•°ã‚’ä½¿ã„ãŸã„ã®ã§#include 
 #include "GameDef.h"
 
 class Slime : public Enemy
 {
-	// “G‚Ìó‘Ô 
+	// æ•µã®çŠ¶æ…‹ 
 	enum class Status {
-		Falling, // —‰º’† 
+		Falling, // è½ä¸‹ä¸­ 
 		Moving,
 	};
 
 public:
-	// ‰Šú‰» 
+	// åˆæœŸåŒ– 
 	void Init();
-	// XV 
+	// æ›´æ–° 
 	void Update();
 
 private:
-	// —‰º‚Ìˆ— 
+	// è½ä¸‹æ™‚ã®å‡¦ç† 
 	void _updateFalling();
-	// ˆÚ“®‚Ìˆ— 
+	// ç§»å‹•æ™‚ã®å‡¦ç† 
 	void _updateMoving();
 
 private:
-	// ó‘Ô 
+	// çŠ¶æ…‹ 
 	Status mStatus;
-	// ‰Á‘¬“x 
+	// åŠ é€Ÿåº¦ 
 	Vector2f mVelocity;
-	// …•½ˆÚ“®‚ÌŒü‚« 
+	// æ°´å¹³ç§»å‹•æ™‚ã®å‘ã 
 	Direction mDirection;
 };

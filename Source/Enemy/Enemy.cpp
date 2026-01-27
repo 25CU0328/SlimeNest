@@ -1,7 +1,9 @@
 #include "Enemy.h" 
 
 // コリジョングループの列挙型を使うために 
+// エネミー状態もここにあります
 #include "GameDef.h" 
+
 // CollisionManagerを使うのでinclude 
 #include "Fwk/Framework.h" 
 
@@ -19,7 +21,7 @@ void Enemy::Init()
     {
         //自分は敵グループのコライダー 
         mCollider.SetGroup((int)CollisionGroup::Enemy);
-        //衝突対象にプレイヤーグループを追加 
+        //Colliderのオーナーに自分を設定 
         mCollider.AddHitGroup((int)CollisionGroup::Player);
         //Colliderのオーナーに自分を設定 
         mCollider.SetOwner(this);
@@ -29,8 +31,26 @@ void Enemy::Init()
         CollisionManager_I->Register(&mCollider);
     }
 
-    //ダメージ時に付ける赤色 
-    mDamagedColor = 0.0f;
+    // 視線コライダーの設定
+    {
+        //自分は視線グループのコライダー 
+        mViewCollider.SetGroup((int)CollisionGroup::View);
+        //Colliderのオーナーに自分を設定 
+        mViewCollider.AddHitGroup((int)CollisionGroup::Player);
+        //Colliderのオーナーに自分を設定 
+        mViewCollider.SetOwner(this);
+        //活性状態にしておく 
+        mViewCollider.SetActive(true);
+
+        // 衝突時のコールバック関数を設定する
+        mViewCollider.SetCallbackFunction(CreateCollisionEventCallback(Enemy::_onPlayerFound));
+
+        //コリジョンマネージャにColliderを登録 
+        CollisionManager_I->Register(&mViewCollider);
+    }
+
+    // パトロール状態に設定する
+    mState = EnemyState::Patrol;
 }
 
 // 後片付け 
@@ -70,6 +90,25 @@ void Enemy::Update()
         }
         //加算する赤色の強さを指定 
         mSprite.SetAdditionalColor(mDamagedColor, 0.0f, 0.0f);
+    }
+
+    switch (mState)
+    {
+    case EnemyState::Patrol:
+        UpdatePatrol();
+        break;
+
+    case EnemyState::Alert:
+        UpdateAlert();
+        break;
+
+    case EnemyState::Attack:
+        UpdateAttack();
+        break;
+
+    case EnemyState::Follow:
+        UpdateFollow();
+        break;
     }
 }
 
@@ -111,16 +150,6 @@ void Enemy::SetPosition(Vector2f position) {
 
 // ダメージを受ける 
 void Enemy::OnDamaged(int damage) {
-    mHP -= damage;
-    if (mHP <= 0) {
-        SetActive(false);
-        // やられた時の関数を呼び出す 
-        // （派生クラスでOnDefeated上書きしていた場合にその関数が呼ばれる） 
-        OnDefeated();
-    }
-    // ダメージ時に加算する赤色の強さを最大値（1.0)に設定 
-    mDamagedColor = 1.0f;
-    mSprite.SetAdditionalColor(mDamagedColor, 0.0f, 0.0f);
     // ダメージ音の再生 
     mSoundSource.Play();
 }
@@ -135,4 +164,60 @@ void Enemy::OnCreated() {
 // 派生クラスで上書きして使う 
 void Enemy::OnDefeated() {
     // なし 
+}
+
+// パトロール状態の更新処理
+void Enemy::UpdatePatrol()
+{
+    // なし 
+}
+
+// 攻撃状態の更新処理
+void Enemy::UpdateAttack()
+{
+    // なし 
+}
+
+// ファロー状態の更新処理
+void Enemy::UpdateFollow()
+{
+    // なし 
+}
+
+// 警戒状態の更新処理
+void Enemy::UpdateAlert()
+{
+    // なし 
+}
+
+void Enemy::_onPlayerFound(const CollisionEvent& collisionEvent)
+{
+    if (collisionEvent.ColliderB->GetHitGroup() != (int)CollisionGroup::Player)
+        return;
+
+    if (collisionEvent.EventType == CollisionEventType::Enter)
+    {
+        if (mState == EnemyState::Patrol)
+        {
+            mState = EnemyState::Alert;
+        }
+
+        else if (mState == EnemyState::Follow)
+        {
+            mState = EnemyState::Attack;
+        }
+    }
+
+    else if (collisionEvent.EventType == CollisionEventType::Exit)
+    {
+        if (mState == EnemyState::Alert)
+        {
+            mState = EnemyState::Patrol;
+        }
+
+        else if (mState == EnemyState::Attack)
+        {
+            mState = EnemyState::Follow;
+        }
+    }
 }

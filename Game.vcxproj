@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\App.cpp" />
+    <ClCompile Include="Source\Enemy\Archer.cpp" />
     <ClCompile Include="Source\Enemy\Enemy.cpp" />
     <ClCompile Include="Source\Enemy\EnemyMng.cpp" />
     <ClCompile Include="Source\Enemy\EnemyPool.cpp" />
@@ -54,9 +55,9 @@
     <ClCompile Include="Source\Weapon\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EnemyDef.h" />
     <ClInclude Include="Source\App.h" />
     <ClInclude Include="Source\AppDef.h" />
+    <ClInclude Include="Source\Enemy\Archer.h" />
     <ClInclude Include="Source\Enemy\Enemy.h" />
     <ClInclude Include="Source\Enemy\EnemyMng.h" />
     <ClInclude Include="Source\Enemy\EnemyPool.h" />

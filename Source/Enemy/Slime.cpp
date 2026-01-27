@@ -1,55 +1,55 @@
-#include "Slime.h" 
+ï»¿#include "Slime.h" 
 
-//Time_I‚ğg‚¤‚Ì‚Åinclude 
+//Time_Iã‚’ä½¿ã†ã®ã§include 
 #include "Fwk/Framework.h" 
-//Tilemap‚ğg‚¤‚Ì‚Åinclude 
+//Tilemapã‚’ä½¿ã†ã®ã§include 
 #include "GameObjectMng/GameObjectMng.h" 
 
-// ‰Šú‰» 
+// åˆæœŸåŒ– 
 void Slime::Init()
 {
-	// “G‹¤’Ê‚Ì‰Šú‰»ˆ— 
+	// æ•µå…±é€šã®åˆæœŸåŒ–å‡¦ç† 
 	Enemy::Init();
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ 
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿ 
 	mTexture.Load("Images/2dAction/slime.png");
 
-	// ƒXƒvƒ‰ƒCƒg‚Ì‰Šú‰» 
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åˆæœŸåŒ– 
 	mSprite.Init();
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è 
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š 
 	mSprite.SetTexture(mTexture);
-	// ƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒYİ’è 
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºè¨­å®š 
 	mSprite.SetSize(64.0f, 64.0f);
-	// ƒeƒNƒXƒ`ƒƒ‚Ì•`‰æ”ÍˆÍ‚ğw’è 
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æç”»ç¯„å›²ã‚’æŒ‡å®š 
 	mSprite.SetTexCoord(0.0f, 0.0f, 0.5f, 0.5f);
 
-	// Õ“ËŒ`óiƒRƒ‰ƒCƒ_[j‚Ìİ’è 
+	// è¡çªå½¢çŠ¶ï¼ˆã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ï¼‰ã®è¨­å®š 
 	{
-		// ƒ^ƒO‚ğİ’è
+		// ã‚¿ã‚°ã‚’è¨­å®š
 		mCollider.SetTag("Slime");
-		// Œ`ó‚ğw’è 
+		// å½¢çŠ¶ã‚’æŒ‡å®š 
 		mCollider.SetRect(0.0f, 0.0f, 40.0f, 40.0f);
 	}
 
-	// HP‚ğİ’è 
+	// HPã‚’è¨­å®š 
 	mHP = 3;
-	// ‰Šúó‘Ô‚ğİ’è 
+	// åˆæœŸçŠ¶æ…‹ã‚’è¨­å®š 
 	mStatus = Status::Falling;
-	// ‰Á‘¬“x‚ğ‰Šú‰» 
+	// åŠ é€Ÿåº¦ã‚’åˆæœŸåŒ– 
 	mVelocity = { 0.0f,0.0f };
-	// ‰Šú‚Ì…•½ˆÚ“®•ûŒü 
+	// åˆæœŸã®æ°´å¹³ç§»å‹•æ–¹å‘ 
 	mDirection = Direction::Left;
 }
 
-// XV 
+// æ›´æ–° 
 void Slime::Update()
 {
-	// ƒAƒNƒeƒBƒu‚Å‚È‚¯‚ê‚ÎXVˆ—‚Ís‚í‚È‚¢ 
+	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã§ãªã‘ã‚Œã°æ›´æ–°å‡¦ç†ã¯è¡Œã‚ãªã„ 
 	if (!IsActive()) {
 		return;
 	}
 
-	// Œ»İ‚Ìó‘Ô‚Åˆ—‚ğ•ªŠò 
+	// ç¾åœ¨ã®çŠ¶æ…‹ã§å‡¦ç†ã‚’åˆ†å² 
 	switch (mStatus) {
 	case Status::Falling:
 		_updateFalling();
@@ -59,94 +59,94 @@ void Slime::Update()
 		break;
 	}
 
-	// “G‹¤’Ê‚Ìˆ— 
-	// ‚±‚ê‚ÍÅV‚ÌˆÊ’u‚ğSprite“™‚É”½‰f‚³‚¹‚é‚à‚Ì‚È‚Ì‚ÅA 
-	// ”h¶ƒNƒ‰ƒX‚ÌXVˆ—‚ÌÅŒã‚ÉŒÄ‚Ô 
+	// æ•µå…±é€šã®å‡¦ç† 
+	// ã“ã‚Œã¯æœ€æ–°ã®ä½ç½®ã‚’Spriteç­‰ã«åæ˜ ã•ã›ã‚‹ã‚‚ã®ãªã®ã§ã€ 
+	// æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã®æ›´æ–°å‡¦ç†ã®æœ€å¾Œã«å‘¼ã¶ 
 	Enemy::Update();
 }
 
-// —‰º‚Ìˆ— 
+// è½ä¸‹æ™‚ã®å‡¦ç† 
 void Slime::_updateFalling() {
 
-	// d—Í‚Ì”{—¦ 
+	// é‡åŠ›ã®å€ç‡ 
 	float gravityScale = 5.0f;
-	// ‚±‚ÌƒtƒŒ[ƒ€‚Å‚Ìd—Í‰Á‘¬—ÊB 
+	// ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã®é‡åŠ›åŠ é€Ÿé‡ã€‚ 
 	float gravity = -9.8f * Time_I->GetDeltaTime() * gravityScale;
-	// ‚±‚ÌƒtƒŒ[ƒ€‚Å‚ÌÅ‘åd—ÍB 
+	// ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã®æœ€å¤§é‡åŠ›ã€‚ 
 	float maxGravity = -1200.0f * Time_I->GetDeltaTime();
-	// d—Í‚ÌŒvZ 
+	// é‡åŠ›ã®è¨ˆç®— 
 	mVelocity.y += gravity;
 	if (mVelocity.y < maxGravity) {
 		mVelocity.y = maxGravity;
 	}
 
-	// ˆÊ’u‚ÌXV 
+	// ä½ç½®ã®æ›´æ–° 
 	mPosition += mVelocity;
 
-	// ©•ª‚Ì‘«Œ³‚ÌÀ•W 
+	// è‡ªåˆ†ã®è¶³å…ƒã®åº§æ¨™ 
 	Vector2f vCheckPos = mPosition + Vector2f(0.0f, -20.0f);
-	// ƒ^ƒCƒ‹ƒ}ƒbƒv‚ÆÕ“Ë”»’è‚ğs‚¤‹éŒ`‚Ì•‚Æ‚‚³ 
+	// ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ã¨è¡çªåˆ¤å®šã‚’è¡Œã†çŸ©å½¢ã®å¹…ã¨é«˜ã• 
 	float CollisionWidth = 40.0f;
 	float CollisionHeight = 1.0f;
 
-	// ‘«Œ³‚ª•Ç‚ÉÕ“Ë‚µ‚Ä‚¢‚½‚çYÀ•W‚ğ’²®‚µ‚Äó‘Ô‚ğ"…•½ˆÚ“®’†"‚É‘JˆÚ‚³‚¹‚é 
+	// è¶³å…ƒãŒå£ã«è¡çªã—ã¦ã„ãŸã‚‰Yåº§æ¨™ã‚’èª¿æ•´ã—ã¦çŠ¶æ…‹ã‚’"æ°´å¹³ç§»å‹•ä¸­"ã«é·ç§»ã•ã›ã‚‹ 
 	if (GetMap()->IsInsideWall(vCheckPos, CollisionWidth, CollisionHeight)) {
-		// ƒ^ƒCƒ‹ƒTƒCƒYæ“¾ 
+		// ã‚¿ã‚¤ãƒ«ã‚µã‚¤ã‚ºå–å¾— 
 		const float tileSize = GetMap()->GetTileSize();
-		// Õ“Ë‚µ‚½‘«Œ³‚ÌÀ•W‚©‚çƒ^ƒCƒ‹s”‚ğŒvZiƒ}ƒCƒiƒX’l‚É‚È‚é‚ªAÀ•W‚É–ß‚·‚Ì‚Å‚»‚Ì‚Ü‚Ü‚Å‚æ‚¢j 
+		// è¡çªã—ãŸè¶³å…ƒã®åº§æ¨™ã‹ã‚‰ã‚¿ã‚¤ãƒ«è¡Œæ•°ã‚’è¨ˆç®—ï¼ˆãƒã‚¤ãƒŠã‚¹å€¤ã«ãªã‚‹ãŒã€åº§æ¨™ã«æˆ»ã™ã®ã§ãã®ã¾ã¾ã§ã‚ˆã„ï¼‰ 
 		int hitTileRow = (int)((vCheckPos.y - CollisionHeight) / tileSize);
-		// Õ“Ë‚µ‚½ƒ^ƒCƒ‹‚Ì‚xÀ•Wi‚»‚Ìƒ^ƒCƒ‹‚Ìã•Ó‚ÌÀ•Wj 
+		// è¡çªã—ãŸã‚¿ã‚¤ãƒ«ã®ï¼¹åº§æ¨™ï¼ˆï¼ãã®ã‚¿ã‚¤ãƒ«ã®ä¸Šè¾ºã®åº§æ¨™ï¼‰ 
 		float hitTileY = hitTileRow * tileSize;
-		// ƒXƒ‰ƒCƒ€‚Ì‚xÀ•W‚ÍÕ“Ë‚µ‚½ƒ^ƒCƒ‹‚Ìã•Ó‚©‚çÕ“Ë”ÍˆÍ‚Ì‚‚³‚Ì”¼•ªã‚ª‚Á‚½ˆÊ’u‚É‚·‚é 
+		// ã‚¹ãƒ©ã‚¤ãƒ ã®ï¼¹åº§æ¨™ã¯è¡çªã—ãŸã‚¿ã‚¤ãƒ«ã®ä¸Šè¾ºã‹ã‚‰è¡çªç¯„å›²ã®é«˜ã•ã®åŠåˆ†ä¸ŠãŒã£ãŸä½ç½®ã«ã™ã‚‹ 
 		mPosition.y = hitTileY + 20.0f;
-		// ó‘Ô‚ğˆÚ“®’†‚É‚µ‚Ä‚¨‚­ 
+		// çŠ¶æ…‹ã‚’ç§»å‹•ä¸­ã«ã—ã¦ãŠã 
 		mStatus = Status::Moving;
 	}
 }
 
-// …•½ˆÚ“®‚Ìˆ— 
+// æ°´å¹³ç§»å‹•æ™‚ã®å‡¦ç† 
 void Slime::_updateMoving() {
 
-	//‚±‚ÌƒtƒŒ[ƒ€‚Å‚ÌˆÚ“®—Ê 
+	//ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã®ç§»å‹•é‡ 
 	float speed = 64.0f * Time_I->GetDeltaTime();
-	// ˆÚ“®•ûŒü‚ğ¦‚·’PˆÊƒxƒNƒgƒ‹(Right =(1.0f,0.0f) Left=(-1.0f,0.0f))‚É‚·‚é 
+	// ç§»å‹•æ–¹å‘ã‚’ç¤ºã™å˜ä½ãƒ™ã‚¯ãƒˆãƒ«(Right =(1.0f,0.0f) Left=(-1.0f,0.0f))ã«ã™ã‚‹ 
 	Vector2f vDirection = Vector2f((mDirection == Direction::Right) ? 1.0f : -1.0f, 0.0f);
-	// ˆÚ“®‚³‚¹‚é
+	// ç§»å‹•ã•ã›ã‚‹
 	mPosition += vDirection * speed;
 
-	// Œü‚«‚ğ”½“]‚·‚é‚©H 
+	// å‘ãã‚’åè»¢ã™ã‚‹ã‹ï¼Ÿ 
 	bool isFlipX = false;
 
-	// •Ç‚ÉÕ“Ë‚·‚é‚©ƒ`ƒFƒbƒN 
+	// å£ã«è¡çªã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ 
 	{
-		// Õ“ËŒŸ’mˆÊ’uivDirection‚ª1.0‚Å‚ ‚ê‚Î‰E‘¤A-1.0‚Å‚ ‚ê‚Î¶‘¤‚É‚È‚éj 
+		// è¡çªæ¤œçŸ¥ä½ç½®ï¼ˆvDirectionãŒ1.0ã§ã‚ã‚Œã°å³å´ã€-1.0ã§ã‚ã‚Œã°å·¦å´ã«ãªã‚‹ï¼‰ 
 		Vector2f vCheckPos = mPosition + (vDirection * 32.0f);
-		// Õ“ËŒŸ’m”ÍˆÍ 
+		// è¡çªæ¤œçŸ¥ç¯„å›² 
 		float CollisionWidth = 1.0f;
 		float CollisionHeight = 40.0f;
-		// •Ç‚ÉÕ“Ë‚µ‚Ä‚¢‚½‚çˆÚ“®•ûŒü”½“]ƒtƒ‰ƒO‚ğON 
+		// å£ã«è¡çªã—ã¦ã„ãŸã‚‰ç§»å‹•æ–¹å‘åè»¢ãƒ•ãƒ©ã‚°ã‚’ON 
 		if (GetMap()->IsInsideWall(vCheckPos, CollisionWidth, CollisionHeight)) {
 			isFlipX = true;
 		}
 	}
-	// —‚Æ‚µŒŠ‚ª‚ ‚é‚©ƒ`ƒFƒbƒN 
+	// è½ã¨ã—ç©´ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ 
 	{
-		// Õ“ËŒŸ’mˆÊ’uivDirection‚ª1.0‚Å‚ ‚ê‚Î‰E‘¤A-1.0‚Å‚ ‚ê‚Î¶‘¤‚É‚È‚éj 
+		// è¡çªæ¤œçŸ¥ä½ç½®ï¼ˆvDirectionãŒ1.0ã§ã‚ã‚Œã°å³å´ã€-1.0ã§ã‚ã‚Œã°å·¦å´ã«ãªã‚‹ï¼‰ 
 		Vector2f vCheckPos = mPosition + (vDirection * 32.0f);
-		// ‘«Œ³‚ğƒ`ƒFƒbƒN‚·‚é‚Ì‚ÅŒŸ’mˆÊ’u‚à‘«Œ³‚É‚È‚é‚æ‚¤YÀ•W‚ğ‰º‚°‚é 
+		// è¶³å…ƒã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã®ã§æ¤œçŸ¥ä½ç½®ã‚‚è¶³å…ƒã«ãªã‚‹ã‚ˆã†Yåº§æ¨™ã‚’ä¸‹ã’ã‚‹ 
 		vCheckPos.y -= 20.0f;
-		// Õ“ËŒŸ’m”ÍˆÍ 
+		// è¡çªæ¤œçŸ¥ç¯„å›² 
 		float CollisionWidth = 1.0f;
 		float CollisionHeight = 1.0f;
-		// ‘«Œ³‚ª•Ç‚Å‚È‚¯‚ê‚ÎˆÚ“®•ûŒü”½“]ƒtƒ‰ƒO‚ğON 
+		// è¶³å…ƒãŒå£ã§ãªã‘ã‚Œã°ç§»å‹•æ–¹å‘åè»¢ãƒ•ãƒ©ã‚°ã‚’ON 
 		if (GetMap()->IsInsideWall(vCheckPos, CollisionWidth, CollisionHeight) == false) {
 			isFlipX = true;
 		}
 	}
 
-	// ˆÚ“®•ûŒü‚Ì”½“]ƒtƒ‰ƒO‚ªON‚É‚È‚Á‚Ä‚¢‚ê‚Î 
+	// ç§»å‹•æ–¹å‘ã®åè»¢ãƒ•ãƒ©ã‚°ãŒONã«ãªã£ã¦ã„ã‚Œã° 
 	if (isFlipX) {
-		// Œü‚«‚ğ”½“]‚·‚é 
+		// å‘ãã‚’åè»¢ã™ã‚‹ 
 		mDirection = (mDirection == Direction::Right) ? Direction::Left : Direction::Right;
 	}
 }

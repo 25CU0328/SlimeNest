@@ -1,99 +1,96 @@
-#include "Ghost.h" 
+﻿#include "Ghost.h" 
 
-// Time_I���g���̂�include 
+// Time_Iを使うのでinclude 
 #include "Fwk/Framework.h" 
 
-// �x�����W�A���ϊ��̃}�N��DegToRad����`����Ă��� 
+// 度→ラジアン変換のマクロDegToRadが定義されている 
 #include "Lib/Math/Math.h"  
 
-// ������ 
+// 初期化 
 void Ghost::Init()
 {
-    // �G���ʂ̏��������� 
+    // 敵共通の初期化処理 
     Enemy::Init();
 
-    // �e�N�X�`���̓ǂݍ��� 
+    // テクスチャの読み込み 
     mTexture.Load("Images/2dAction/ghost.png");
 
-    //�X�v���C�g�̏����� 
+    //スプライトの初期化 
     mSprite.Init();
-    // �e�N�X�`���̐ݒ� 
+    // テクスチャの設定 
     mSprite.SetTexture(mTexture);
-    // �X�v���C�g�̃T�C�Y�ݒ� 
+    // スプライトのサイズ設定 
     mSprite.SetSize(160.0f, 160.0f);
 
-    // �Փˌ`��i�R���C�_�[�j�̐ݒ� 
+    // 衝突形状（コライダー）の設定 
     {
-        // �^�O��ݒ� 
+        // タグを設定 
         mCollider.SetTag("Ghost");
-        // �`����w�� 
+        // 形状を指定 
         mCollider.SetCircle(0.0f, 0.0f, 40.0f);
     }
 
-    // HP��ݒ� 
-    mHP = 6;
-
-    // ���������̕b�Ԉړ��X�s�[�h 
+    // 水平方向の秒間移動スピード 
     mSpeed = 64.0f;
-    // ���������̍ő�ψʁi�U���j 
+    // 垂直方向の最大変位（振幅） 
     mAmp = 120.0f;
-    // ���� 
+    // 周期 
     mPeriodTime = 3.0f;
-    // �������Ői�s�����𔽓]���邩 
+    // 何周期で進行方向を反転するか 
     mTurnPeriod = 3;
-    // ���݂̌��� 
+    // 現在の向き 
     mDirection = Direction::Left;
-    // �^�C�}�[������ 
+    // タイマー初期化 
     mTimer = 0.0f;
 }
 
-// �X�V 
+// 更新 
 void Ghost::Update()
 {
-    // �A�N�e�B�u�łȂ���΍X�V�����͍s��Ȃ� 
+    // アクティブでなければ更新処理は行わない 
     if (!IsActive()) {
         return;
     }
 
-    // �o�ߎ��Ԃ��X�V
+    // 経過時間を更新
     mTimer += Time_I->GetDeltaTime();
 
     Vector2f vDirection = Vector2f((mDirection == Direction::Right) ? 1.0f : -1.0f, 0.0f);
 
-    //���]����ʒu�i�[�j�ɓ��B���鎞�� 
+    //反転する位置（端）に到達する時間 
     float turnTime = mPeriodTime * mTurnPeriod;
-    // ���]���鎞�Ԃ𒴂��Ă����� 
+    // 反転する時間を超えていたら 
     if (mTimer >= turnTime) {
-        // ���_��܂�Ԃ��n�_�Ɉڂ� 
+        // 原点を折り返し地点に移す 
         mOrigin = mOrigin + vDirection * (mSpeed * turnTime);
-        // ���ݎ������甽�]�܂ł̎��Ԃ����炵�Ă��� 
+        // 現在時刻から反転までの時間を減らしておく 
         mTimer -= turnTime;
-        // �����𔽓] 
+        // 向きを反転 
         mDirection = (mDirection == Direction::Right) ? Direction::Left : Direction::Right;
-        // �����x�N�g�������] 
+        // 向きベクトルも反転 
         vDirection *= -1.0f;
-        // �������E�Ɍ�������G�����E���]���� 
+        // 向きが右に向いたら絵を左右反転する 
         mSprite.SetFlipX(mDirection == Direction::Right);
     }
 
-    // ���������̈ړ��B���݈ʒu�����_�{���ݎ����̐��������ړ��ʂƂ��� 
+    // 水平方向の移動。現在位置＝原点＋現在時刻の水平方向移動量とする 
     mPosition = mOrigin + (vDirection * mSpeed * mTimer);
 
-    // ���݂̊p�x�Ƃ����߂� 360�x��(���ݎ���/����T)��������Ό��ݎ����̊p�x�ɂȂ� 
+    // 現在の角度θを求める 360度に(現在時刻/周期T)をかければ現在時刻の角度になる 
     float theta = 360.0f * (mTimer / mPeriodTime);
 
-    // ���݈ʒu�̂������ɐ��������̕ω��ʁisin�Ɓ~mAmp�j�����Z 
+    // 現在位置のｙ成分に垂直方向の変化量（sinθ×mAmp）を加算 
     mPosition.y += sinf(DegToRad(theta)) * mAmp;
 
-    // �G���ʂ̏��� 
-    // ����͍ŐV�̈ʒu��Sprite���ɔ��f��������̂Ȃ̂ŁA 
-    // �h���N���X�̍X�V�����̍Ō�ɌĂ� 
+    // 敵共通の処理 
+    // これは最新の位置をSprite等に反映させるものなので、 
+    // 派生クラスの更新処理の最後に呼ぶ 
     Enemy::Update();
 }
 
-// �������ꂽ���ɌĂяo����� 
+// 生成された時に呼び出される 
 void Ghost::OnCreated()
 {
-    // �J�n���̍��W�����_�Ƃ��ċL�^���Ă��� 
+    // 開始時の座標を原点として記録しておく 
     mOrigin = mPosition;
 }
