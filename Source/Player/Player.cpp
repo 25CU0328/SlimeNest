@@ -20,10 +20,10 @@
 void Player::Init() {
 
 	// 位置の初期化
-	mPosition = { 96.0f, -96.0f };
+	mPosition = { 120.0f, -180.0f };
 
 	// テクスチャの読み込み
-	mTexture.Load("Images/2dAction/Slime.png");
+	mTexture.Load("Images/Slime/Slime.png");
 
 	// スプライトの初期化
 	{
@@ -32,7 +32,7 @@ void Player::Init() {
 		// スプライトのサイズ設定 
 		mSprite.SetSize(64.0f, 64.0f);
 		// テクスチャの描画範囲を指定 
-		mSprite.SetTexCoord(0.0f, 0.0f, 0.5f, 0.5f);
+		mSprite.SetTexCoord(0.0f, 0.0f, 1.0f / 7.0f, 0.5f);
 		mSprite.SetPosition(mPosition);
 
 		//※追加 やられ状態から復帰してきたときに再表示する必要がある 
@@ -70,13 +70,11 @@ void Player::Init() {
 
 	mInvicibilityFrames = 0;
 
-	(StateType::Moving);
-
 	//初期の向きを右向きにしておく 
 	mDirection = Direction::Right;
 
 	// 速度の初期化
-	mVelocity = { 0.0f, 0.0f };
+	mVelocity = Vector2f(0.0f, 0.0f);
 
 	// HPを初期化しておく
 	mHpMax = 5;
@@ -85,6 +83,9 @@ void Player::Init() {
 	//Waveデータ読み込み 
 	mSounds[(int)Sound::Jump].Load("Sound/jumpC.wav");
 	mSounds[(int)Sound::Damaged].Load("Sound/damageB.wav");
+	mSounds[(int)Sound::Move].Load("Sound/Slime/Slime_Move");
+	mSounds[(int)Sound::Jump_Start].Load("Sound/Slime/Slime_Jump_Start");
+	mSounds[(int)Sound::Jump_End].Load("Sound/Slime/Slime_Jump_End");
 	//音源 
 	mSoundSources[(int)Sound::Jump].Init(mSounds[(int)Sound::Jump]);
 	mSoundSources[(int)Sound::Damaged].Init(mSounds[(int)Sound::Damaged]);
@@ -135,99 +136,74 @@ void Player::Term() {
 // アニメーションの初期化
 void Player::_initAnimation()
 {
-	/*float uvW = 1.0f / 8.0f;
-	float uvH = 1.0f / 1.0f;
+	float uvW = 1.0f / 7.0f;
+	float uvH = 1.0f / 2.0f;
 
 	UVRect uvs[] = {
-		{uvW * 0.0f, 0.0f, uvW, uvH}, //前向き　パターン1
-		{uvW * 1.0f, 0.0f, uvW, uvH}, //前向き　パターン1
-		{uvW * 2.0f, 0.0f, uvW, uvH}, //前向き　パターン1
-		{uvW * 3.0f, 0.0f, uvW, uvH}, //前向き　パターン1
-		{uvW * 4.0f, 0.0f, uvW, uvH}, //前向き　パターン1
-		{uvW * 5.0f, 0.0f, uvW, uvH}, //前向き　パターン1
-		{uvW * 6.0f, 0.0f, uvW, uvH}, //前向き　パターン1
-		{uvW * 7.0f, 0.0f, uvW, uvH}, //前向き　パターン1
-	};
+		{uvW * 0.0f, 0.0f, uvW, uvH},	//Idle Frame_1
+		{uvW * 1.0f, 0.0f, uvW, uvH},	//Idle Frame_2
+		{uvW * 2.0f, 0.0f, uvW, uvH},	// Move Frame_1
+		{uvW * 3.0f, 0.0f, uvW, uvH},	// Move Frame_2
+		{uvW * 4.0f, 0.0f, uvW, uvH},	// Move Frame_3
+		{uvW * 5.0f, 0.0f, uvW, uvH},	// Move Frame_4
+		{uvW * 6.0f, 0.0f, uvW, uvH},	// Move Frame_5
+		{uvW * 0.0f, 0.5f, uvW, uvH},	// Jump Frame_1
+		{uvW * 1.0f, 0.5f, uvW, uvH},	// Jump Frame_2
+		{uvW * 2.0f, 0.5f, uvW, uvH},	// Jump Frame_3
+		{uvW * 3.0f, 0.5f, uvW, uvH},	// Jump Frame_4
+		{uvW * 4.0f, 0.5f, uvW, uvH},	// Jump Frame_5
+		{uvW * 5.0f, 0.5f, uvW, uvH},	// Jump Frame_6
+		{uvW * 6.0f, 0.5f, uvW, uvH},	// Jump Frame_7
 
-	UVRect idle_front[] = { uvs[0] };	// 前
-	UVRect idle_right[] = { uvs[2] };	// 右
-	UVRect idle_back[] = { uvs[4] };	// 後
-	UVRect idle_left[] = { uvs[6] };	// 左
+	};
 
 	// プレイヤー移動時のアニメ
 	// 前
-	UVRect walk_front[] = {
-		uvs[0],
-		uvs[1],
+	UVRect idle[] = {
+		{uvW * 0.0f, 0.0f, uvW, uvH},	//Idle Frame_1
+		{uvW * 1.0f, 0.0f, uvW, uvH},	//Idle Frame_2
 		{}
 	};
 
 	// 右
-	UVRect walk_right[] = {
-		uvs[2],
-		uvs[3],
+	UVRect move[] = {
+		{uvW * 2.0f, 0.0f, uvW, uvH},	// Move Frame_1
+		{uvW * 3.0f, 0.0f, uvW, uvH},	// Move Frame_2
+		{uvW * 4.0f, 0.0f, uvW, uvH},	// Move Frame_3
+		{uvW * 5.0f, 0.0f, uvW, uvH},	// Move Frame_4
+		{uvW * 6.0f, 0.0f, uvW, uvH},	// Move Frame_5
 		{}
 	};
 
 	// 後
-	UVRect walk_back[] = {
-		uvs[4],
-		uvs[5],
-		{}
-	};
-
-	// 左
-	UVRect walk_left[] = {
-		uvs[6],
-		uvs[7],
+	UVRect jump[] = {
+		{uvW * 0.0f, 0.5f, uvW, uvH},	// Jump Frame_1
+		{uvW * 1.0f, 0.5f, uvW, uvH},	// Jump Frame_2
+		{uvW * 2.0f, 0.5f, uvW, uvH},	// Jump Frame_3
+		{uvW * 3.0f, 0.5f, uvW, uvH},	// Jump Frame_4
+		{uvW * 4.0f, 0.5f, uvW, uvH},	// Jump Frame_5
+		{uvW * 5.0f, 0.5f, uvW, uvH},	// Jump Frame_6
+		{uvW * 6.0f, 0.5f, uvW, uvH},	// Jump Frame_7
 		{}
 	};
 
 	// アニメーションデータ
-	Animation animation[8];
+	Animation animation[3];
 
 	// アイドル時アニメーションデータの作成
 	// 前向き
-	CreateAnimationUV(animation[0], "idle_front", 1, 0.0f, false, idle_front);
+	CreateAnimationUV(animation[0], "idle", 3, 0.5f, true, idle);
 	// 右向き
-	CreateAnimationUV(animation[1], "idle_right", 1, 0.0f, false, idle_right);
+	CreateAnimationUV(animation[1], "move", 6, 0.5f, true, move);
 	// 後向き
-	CreateAnimationUV(animation[2], "idle_back", 1, 0.0f, false, idle_back);
-	// 左向き
-	CreateAnimationUV(animation[3], "idle_left", 1, 0.0f, false, idle_left);
-
-	// 歩行時アニメーションデータの作成
-	// 前向き
-	CreateAnimationUV(animation[4], "walk_front", 3, 0.45f, true, walk_front);
-	// 右向き
-	CreateAnimationUV(animation[5], "walk_right", 3, 0.45f, true, walk_right);
-	// 後向き
-	CreateAnimationUV(animation[6], "walk_back", 3, 0.45f, true, walk_back);
-	// 左向き
-	CreateAnimationUV(animation[7], "walk_left", 3, 0.45f, true, walk_left);
-
-	for (int i = 0; i < 8; ++i) {
+	CreateAnimationUV(animation[2], "jump", 8, 0.5f, false, jump);
+	
+	for (int i = 0; i < 3; ++i) {
 		mSprite.AddAnimation(animation[i]);
 	}
-
-	//やられ時のアニメを追加
-	{
-		//0度→360度の回転アニメーション
-		float rotDeg[] = {
-			0.0f,
-			360.0f,
-		};
-		Animation animDying;
-		//回転アニメを生成。キーフレーム数は２。0.5秒で一回転、ループする,
-		CreateAnimationRotation(animDying, "dying", 2, 0.5, true, rotDeg);
-		//↑で生成したアニメにUVアニメを追加。正面向きにします。
-		AddAnimationUV(animDying, 1, 0.5, idle_front);
-		//Spriteにやられた時のアニメを追加
-		mSprite.AddAnimation(animDying);
-	}
-
+	
 	// 初期アニメーションを設定する
-	mSprite.PlayAnimation("idle_right");*/
+	mSprite.PlayAnimation("idle");
 }
 
 // 衝突する時のコールバック関数
@@ -356,4 +332,9 @@ Vector2f Player::GetVelocity()
 void Player::SetVelocity(Vector2f newVelocity)
 {
 	mVelocity = newVelocity;
+}
+
+void Player::PlaySfx(Sound soundType)
+{
+	mSoundSources[(int)soundType].Play();
 }

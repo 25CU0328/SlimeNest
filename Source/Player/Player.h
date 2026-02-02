@@ -41,6 +41,9 @@ class Player {
 
 	//使う効果音の種類 
 	enum class Sound {
+		Move,
+		Jump_Start,
+		Jump_End,
 		Jump,
 		Damaged,
 
@@ -82,9 +85,16 @@ public:
 	// 移動速度を引数の値通りに設定する
 	void SetVelocity(Vector2f newVelocity);
 
-	Direction GetDirection() { return mDirection; };
+	// プレイヤーの向きを取得する
+	Direction GetDirection() { return mDirection; }
+	// プレイヤーの向きを設定する
+	void SetDirection(Direction newDirection) { mDirection = newDirection; }
 
+	// スプライトを取得
 	Sprite* GetSprite();
+
+	// サウンドをプレイする
+	void PlaySfx(Sound sound);
 
 private:
 

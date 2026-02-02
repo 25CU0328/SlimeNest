@@ -15,7 +15,7 @@ void StateCharging::OnStateEnter()
 
 void StateCharging::OnStateUpdate()
 {
-	if (!Input_I->IsKeyPressed('Z'))
+	if (!(Input_I->IsButtonPressed(0, GAMEPAD_BUTTON::B) && !Input_I->IsKeyPressed('Z')))
 	{
 		if (mChargeForce >= mMinChargeForce)
 		{
@@ -113,6 +113,10 @@ void StateCharging::_updateGround()
 {
 	//ゲームパッドの入力を取得 
 	Vector2f vInput = { 0.0f, 0.0f };
+	vInput = Input_I->GetStickInput(0, GAMEPAD_STICK::LEFT);
+
+	// ゲームパットの入力がない場合
+	// キーボードの入力を取得
 	if (vInput.GetLength() == 0.0f)
 	{
 		if (Input_I->IsKeyPressed(VK_RIGHT))
@@ -141,7 +145,12 @@ void StateCharging::_updateGround()
 // 壁に貼り付いている時の処理
 void StateCharging::_updateWall(Direction wallDirection)
 {
-	Vector2f vInput = Vector2f(0.0f, 0.0f);
+	//ゲームパッドの入力を取得 
+	Vector2f vInput = { 0.0f, 0.0f };
+	vInput = Input_I->GetStickInput(0, GAMEPAD_STICK::LEFT);
+
+	// ゲームパットの入力がない場合
+	// キーボードの入力を取得
 	// 壁は左にある場合(右側にジャンプ)
 	if (wallDirection == Direction::Left)
 	{
@@ -197,7 +206,12 @@ void StateCharging::_updateWall(Direction wallDirection)
 // 天井に貼り付いている時の処理
 void StateCharging::_updateCeiling()
 {
-	Vector2f vInput = Vector2f(0.0f, 0.0f);
+	//ゲームパッドの入力を取得 
+	Vector2f vInput = { 0.0f, 0.0f };
+	vInput = Input_I->GetStickInput(0, GAMEPAD_STICK::LEFT);
+
+	// ゲームパットの入力がない場合
+	// キーボードの入力を取得
 	if (vInput.GetLength() == 0.0f)
 	{
 		if (Input_I->IsKeyPressed(VK_RIGHT))

@@ -30,6 +30,9 @@ public:
 
 	Vector2f GetMapSize();
 
+	// 指定した位置のタイルの中心位置を返す関数
+	Vector2f GetTileCenterPosition(Vector2f vTargetPosition);
+
 	// 指定された座標にあるタイルが壁であるかを戻す
 	bool IsWall(Vector2f position);
 

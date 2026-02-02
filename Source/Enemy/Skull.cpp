@@ -30,9 +30,6 @@ void Skull::Init()
 
     //アニメーションを初期化 
     _initAnimation();
-
-    //HPを設定 
-    mHP = 3;
     //タイマー初期化 
     mTimer = 0.0f;
     //向き 

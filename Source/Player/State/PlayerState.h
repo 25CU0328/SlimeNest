@@ -32,7 +32,6 @@ protected:
 
 	// 次の状態
 	StateType mNextState;
-
 	// プレイヤーの関数がよく使うので、ここに保存する
 	//Player* mPlayer;
 };

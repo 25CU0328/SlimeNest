@@ -11,12 +11,17 @@ using namespace Lib::Math;
 class StateMoving : public PlayerState
 {
 	// 移動の種類
-	enum class MoveType
+	enum class SurfaceType
 	{
 		Air, 
 		Ground,
 		Wall,
 		Ceiling,
+	};
+
+	struct Surface {
+		SurfaceType type;
+		Vector2f normal;
 	};
 public:
 	void Init();
@@ -25,7 +30,6 @@ public:
 private:
 	
 	void _translate(Vector2f vMove);
-	Vector2f _getVectorByDirection(Direction direction);
 	void _updateInAir(Vector2f vInput);
 	// 地上にいる時の処理
 	void _updateGround(Vector2f vInput);
@@ -35,9 +39,6 @@ private:
 
 	// 天井に貼り付けている時の処理
 	void _updateCeiling(Vector2f vInput);
-
-	bool _isSwitchTypeSpeed(float fSpeed);
-
 	// 今は地面にいるかを返す関数
 	bool _isCeil(Vector2f vVelocity = Vector2f(0.0f, 20.0f));
 	// 今は壁の隣にいるかを返す関数
@@ -45,9 +46,35 @@ private:
 	// 今は天井の下にいるかを返す関数
 	bool _isGround(Vector2f vVelocity = Vector2f(0.0f, -20.0f));
 
-	MoveType mMoveType;
+	// 表面外に出ているかを返す関数
+	// チェックするのは現在位置からfDetectDistance単位離れたところ
+	bool _isOutsideSurface(Vector2f vTargetPosition);
+
+	// 今プレイヤーが向かっている方向を返す関数
+	Vector2f _getPlayerFacingVector();
+	// 次の表面に切り替える時の更新処理
+	void _updateSurfaceTransition();
+
+	// プレイヤースプライトの向きを設定する
+	void _setSpriteRotationAndFlip(Surface targetSurface);
+	// 現在移動している面の情報
+	Surface mCurrentSurface;
+	// 次の移動したい面の情報
+	Surface mNextSurface;
+	// 別の表面に切り替えるかを表す変数
+	bool mIsSurfaceTransition;
+
+	float mSurfaceTransitionTime;
+
+	// プレイヤーの位置を調整するため、元々の位置を記録する変数
+	Vector2f originalPlayerPosition;
+
 
 #pragma region Constant
+
+	// 別の表面に切り替える時かかる時間
+	const float mSurfaceTransitionRequireTime = 0.3f;
+
 	// 別の壁に貼り付けるかどうかを判断する基準
 	const float mMinStickVelocity = 2.0f;
 	const float mMaxStickVelocity = 20.0f;

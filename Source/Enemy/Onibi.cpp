@@ -35,8 +35,6 @@ void Onibi::Init()
         //形状を指定(中心位置はmPositionと同じ、形状は円で） 
         mCollider.SetCircle(0.0f, 0.0f, 20.0f);
     }
-    //HPを設定 
-    mHP = 3;
 }
 
 // 更新
@@ -106,6 +104,4 @@ void Onibi::_initAnimation()
 
 // 生成された時に呼び出される 
 void Onibi::OnCreated() {
-    // 体力を初期化 
-    mHP = 3;
 }

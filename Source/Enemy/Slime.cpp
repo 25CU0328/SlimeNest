@@ -30,9 +30,6 @@ void Slime::Init()
 		// 形状を指定 
 		mCollider.SetRect(0.0f, 0.0f, 40.0f, 40.0f);
 	}
-
-	// HPを設定 
-	mHP = 3;
 	// 初期状態を設定 
 	mStatus = Status::Falling;
 	// 加速度を初期化 

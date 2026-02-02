@@ -234,3 +234,14 @@ Vector2f Tilemap::GetMapSize()
 
 	return result;
 }
+
+
+// 指定した位置のタイルの中心位置を返す関数
+Vector2f Tilemap::GetTileCenterPosition(Vector2f vTargetPosition)
+{
+	// 指定した位置のタイルマップ座標
+	Vector2i vTargetCoordinate = Vector2i((int)(vTargetPosition.x / TileSize), (int)(vTargetPosition.y / TileSize));
+
+	// タイルマップの座標から中心位置を計算する
+	return Vector2f(vTargetCoordinate.x * TileSize, vTargetCoordinate.y * TileSize);
+}

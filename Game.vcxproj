@@ -39,6 +39,7 @@
     <ClCompile Include="Source\Player\State\StateDamaged.cpp" />
     <ClCompile Include="Source\Player\State\StateDead.cpp" />
     <ClCompile Include="Source\Player\State\StateMng.cpp" />
+    <ClCompile Include="Source\Player\State\StateMove\StateMove.cpp" />
     <ClCompile Include="Source\Player\State\StateMoving.cpp" />
     <ClCompile Include="Source\Player\State\StateWater.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="Source\Player\State\StateDead.h" />
     <ClInclude Include="Source\Player\State\StateDef.h" />
     <ClInclude Include="Source\Player\State\StateMng.h" />
+    <ClInclude Include="Source\Player\State\StateMove\StateMove.h" />
     <ClInclude Include="Source\Player\State\StateMoving.h" />
     <ClInclude Include="Source\Player\State\StateWater.h" />
     <ClInclude Include="Source\Position.h" />

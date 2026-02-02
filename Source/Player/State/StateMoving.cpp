@@ -4,34 +4,60 @@
 #include "Fwk/Framework.h"
 #include "GameObjectMng/GameObjectMng.h"
 
+const float PI = 3.1416f;
+const float CollisionSize = 20.0f;
+
+// タイルが存在するかをチェックするために使う変数
+const float TileDetectDistance = CollisionSize / 2.0f;
+
 void StateMoving::Init()
 {
 	PlayerState::Init();
-	mMoveType = MoveType::Air;
-	GetPlayer()->GetSprite()->SetRotationZ(0.0f);
+	mCurrentSurface.type = SurfaceType::Air;
+	GetPlayer()->SetDirection(Direction::Right);
+
+	mIsSurfaceTransition = false;
+	mSurfaceTransitionTime = mSurfaceTransitionRequireTime;
 }
 
 void StateMoving::OnStateUpdate()
 {
 	PlayerState::OnStateUpdate();
-	switch (mMoveType)
+	switch (mCurrentSurface.type)
 	{
-	case MoveType::Air:
+	case SurfaceType::Air:
 		DebugLog("In Air");
 		break;
-	case MoveType::Ceiling:
+	case SurfaceType::Ceiling:
 		DebugLog("Ceiling");
 		break;
-	case MoveType::Ground:
+	case SurfaceType::Ground:
 		DebugLog("Ground");
 		break;
-	case MoveType::Wall:
+	case SurfaceType::Wall:
 		DebugLog("Wall");
 		break;
 	}
-	
+	switch (mNextSurface.type) {
+	case SurfaceType::Air:
+		DebugLog("Next Air");
+		break;
+	case SurfaceType::Ceiling:
+		DebugLog("Next Ceiling");
+		break;
+	case SurfaceType::Ground:
+		DebugLog("Next Ground");
+		break;
+	case SurfaceType::Wall:
+		DebugLog("Next Wall");
+		break;
+	}
 	//ゲームパッドの入力を取得 
 	Vector2f vInput = { 0.0f, 0.0f };
+	vInput = Input_I->GetStickInput(0, GAMEPAD_STICK::LEFT);
+
+	// ゲームパットの入力がない場合
+	// キーボードの入力を取得する
 	if (vInput.GetLength() == 0.0f)
 	{
 		if (Input_I->IsKeyPressed(VK_RIGHT))
@@ -53,32 +79,48 @@ void StateMoving::OnStateUpdate()
 	}
 	
 	//ゲームパッドのBボタンが押されたら＋Y方向に加速する（ジャンプ） 
-	if ((Input_I->IsButtonDown(0, GAMEPAD_BUTTON::B) || Input_I->IsKeyDown('Z'))) {
-		if (mMoveType != MoveType::Air)
+	if ((Input_I->IsButtonDown(0, GAMEPAD_BUTTON::A) || Input_I->IsKeyDown('C'))) {
+		DebugLog("C KeyDown");
+		if (mCurrentSurface.type != SurfaceType::Air)
 		{
 			mNextState = StateType::Charge;
 		}
 	}
-	if (mMoveType == MoveType::Ground)
-	{
-		_updateGround(vInput);
-		return;
+	if ((Input_I->IsButtonDown(0, GAMEPAD_BUTTON::B) || Input_I->IsKeyDown('Z'))) {
+		mIsSurfaceTransition = true;
+		// 位置を調整するため、今の位置を記録する
+		originalPlayerPosition = GetPlayer()->GetPosition();
 	}
-	else if (mMoveType == MoveType::Wall)
+
+	if (mIsSurfaceTransition)
 	{
-		_updateWall(vInput);
-		return;
-	}
-	else if (mMoveType == MoveType::Ceiling)
-	{
-		_updateCeiling(vInput);
-		return;
+		_updateSurfaceTransition();
 	}
 	else
 	{
-		_updateInAir(vInput);
-		return;
+		// 今移動する表面の種類によって、適切な処理呼び出し
+		switch (mCurrentSurface.type)
+		{
+		case SurfaceType::Ground:
+			_updateGround(vInput);
+			break;
+
+		case SurfaceType::Wall:
+			_updateWall(vInput);
+			break;
+
+		case SurfaceType::Ceiling:
+			_updateCeiling(vInput);
+			break;
+
+		case SurfaceType::Air:
+			_updateInAir(vInput);
+			break;
+		}
 	}
+	
+
+	
 }
 
 //速度を更新する 
@@ -98,12 +140,7 @@ void StateMoving::_translate(Vector2f vMove)
 	if (vMove.x != 0.0f) {
 		// 現在位置に移動ベクトルの x 成分を足して移動先の位置とする
 		Vector2f vTargetPos = pPlayer->GetPosition() + Vector2f(vMove.x, 0.0f);
-
-		// 壁との衝突チェック
-		if (!GetMap()->IsInsideWall(vTargetPos, CollisionSize, CollisionSize)) {
-			pPlayer->SetPosition(vTargetPos);
-		}
-		else
+		if (GetMap()->IsInsideWall(vTargetPos, CollisionSize, CollisionSize))
 		{
 			// 右向きに移動しようとしていた場合
 			if (vMove.x > 0.0f)
@@ -133,17 +170,25 @@ void StateMoving::_translate(Vector2f vMove)
 				pPlayer->SetPosition(playerPos);
 			}
 		}
+		// 既に端にいる場合
+		else if (_isOutsideSurface(vTargetPos) && mCurrentSurface.type != SurfaceType::Air)
+		{
+			// 移動なし
+		}
+		// どっちでもない場合
+		else
+		{
+			pPlayer->SetPosition(vTargetPos);
+		}
 	}
 	// Ｙ軸方向の処理
 	if (vMove.y != 0.0f) {
 		// 現在位置に移動ベクトルのy成分を足して移動先の位置とする
 		Vector2f vTargetPos = pPlayer->GetPosition() + Vector2f(0.0f, vMove.y);
 
-		// 壁との衝突チェック
-		if (!GetMap()->IsInsideWall(vTargetPos, CollisionSize, CollisionSize)) {
-			pPlayer->SetPosition(vTargetPos);
-		}
-		else {
+		// 壁と衝突したら
+		if (GetMap()->IsInsideWall(vTargetPos, CollisionSize, CollisionSize))
+		{
 			// 上向きに移動しようとしていた場合
 			if (vMove.y > 0.0f) {
 				// 衝突した行数を算出
@@ -169,6 +214,15 @@ void StateMoving::_translate(Vector2f vMove)
 				pPlayer->SetPosition(playerPos);
 			}
 		}
+		// 移動したい方向は
+		else if (_isOutsideSurface(vTargetPos) && mCurrentSurface.type != SurfaceType::Air)
+		{
+			// 移動なし
+		}
+		else
+		{
+			pPlayer->SetPosition(vTargetPos);
+		}
 	}
 }
 
@@ -192,7 +246,7 @@ void StateMoving::_updateInAir(Vector2f vInput)
 	//摩擦による速度の減衰 
 	if(_isGround())
 	{
-		vVelocity.x *= 0.9f;
+		vVelocity.x *= 0.8f;
 		//ある程度速度が小さくなったらゼロに丸めてしまってOK 
 		if (fabsf(vVelocity.x) < 0.001f) {
 			vVelocity.x = 0.0f;
@@ -216,21 +270,22 @@ void StateMoving::_updateInAir(Vector2f vInput)
 	}
 
 	Sprite* vSprite = pPlayer->GetSprite();
-	if (_isGround(vVelocity.GetNormalized()) && _isSwitchTypeSpeed(vVelocity.y) && vVelocity.y < 0.0f)
+	Vector2f vTargetPosition = pPlayer->GetPosition() + vVelocity;
+
+	// もしタイルとぶつかる場合
+	if (GetMap()->IsInsideWall(vTargetPosition, CollisionSize, CollisionSize))
 	{
-		mMoveType = MoveType::Ground;
-		vSprite->SetRotationZ(0.0f);
-	}
-	else if (_isNextToWall(Vector2f(vVelocity.GetNormalized().x, 0.0f)) && _isSwitchTypeSpeed(vVelocity.x))
-	{
-		mMoveType = MoveType::Wall;
-		if (vVelocity.x > 0)
+		if (vVelocity.y < 0)
 		{
-			vSprite->SetRotationZ(90.0f);
+			mCurrentSurface.type = SurfaceType::Ground;
+			mCurrentSurface.normal = Vector2f(0.0f, 1.0f);
 		}
-		else
+		else if (vVelocity.x != 0)
 		{
-			vSprite->SetRotationZ(-90.0f);
+			mCurrentSurface.type = SurfaceType::Wall;
+
+			// 移動方向の反対方向を代入する
+			mCurrentSurface.normal = (vVelocity.x > 0) ? Vector2f(-1.0f, 0.0f) : Vector2f(1.0f, 0.0f);
 		}
 	}
 
@@ -250,17 +305,33 @@ void StateMoving::_updateInAir(Vector2f vInput)
 void StateMoving::_updateGround(Vector2f vInput)
 {
 	//このフレームでの加速量 
-	float acceleration = mGroundSpeedCoefficient * Time_I->GetDeltaTime();
+	const float acceleration = mGroundSpeedCoefficient * Time_I->GetDeltaTime();
 	//このフレームでの最大移動量 
-	float maxSpeed = mGroundMaxSpeed * Time_I->GetDeltaTime();
+	const float maxSpeed = mGroundMaxSpeed * Time_I->GetDeltaTime();
 
 	
-
+	// この後よく使うため事前に変数として宣言する
 	Player* pPlayer = GetPlayer();
 	Vector2f vVelocity = pPlayer->GetVelocity();
 
 	// y方向の速度は処理しないため、0にする
 	vVelocity.y = 0;
+
+	// 入力方向によって、向きを設定する
+	{
+		if (vInput.x > 0)
+		{
+			pPlayer->SetDirection(Direction::Right);
+		}
+		else if (vInput.x < 0)
+		{
+			pPlayer->SetDirection(Direction::Left);
+		}
+		// スプライトの向きを設定
+		_setSpriteRotationAndFlip(mCurrentSurface);
+	}
+
+
 
 	//摩擦による速度の減衰 
 	{
@@ -282,35 +353,18 @@ void StateMoving::_updateGround(Vector2f vInput)
 	}
 
 	pPlayer->SetVelocity(vVelocity);
-	if (!_isGround())
+
+	// 今地面が消えた場合
+	if (_isOutsideSurface(pPlayer->GetPosition() + vVelocity))
 	{
-		mMoveType = MoveType::Wall;
-		Sprite* vSprite = pPlayer->GetSprite();
-		if (vVelocity.x > 0)
-		{
-			vSprite->SetRotationZ(-90.0f);
-			vVelocity = Vector2f(vVelocity.y, -vVelocity.x);
-		}
-		else
-		{
-			vSprite->SetRotationZ(90.0f);
-			vVelocity = Vector2f(vVelocity.y, vVelocity.x);
-		}
-		
-		
+		mNextSurface.type = SurfaceType::Wall;
+		mNextSurface.normal = (vVelocity.x >= 0) ? Vector2f(1.0f, 0.0f) : Vector2f(-1.0f, 0.0f);
 	}
-	else if (_isNextToWall(vVelocity.GetNormalized()) && _isSwitchTypeSpeed(vVelocity.x))
+	// 壁とぶつかる、かつ壁に向かって移動する場合
+	else if (GetMap()->IsInsideWall(pPlayer->GetPosition() + vVelocity, CollisionSize, CollisionSize))
 	{
-		mMoveType = MoveType::Wall;
-		Sprite* vSprite = pPlayer->GetSprite();
-		if (vVelocity.x > 0)
-		{
-			vSprite->SetRotationZ(90.0f);
-		}
-		else
-		{
-			vSprite->SetRotationZ(-90.0f);
-		}
+		mNextSurface.type = SurfaceType::Wall;
+		mNextSurface.normal = (vVelocity.x > 0) ? Vector2f(-1.0f, 0.0f) : Vector2f(1.0f, 0.0f);
 	}
 
 	_translate(vVelocity);
@@ -319,7 +373,6 @@ void StateMoving::_updateGround(Vector2f vInput)
 // 壁に貼り付けている時の処理
 void StateMoving::_updateWall(Vector2f vInput)
 {
-	
 	//このフレームでの加速量 
 	float acceleration = mWallSpeedCoefficient * Time_I->GetDeltaTime();
 	//このフレームでの最大移動量 
@@ -327,16 +380,50 @@ void StateMoving::_updateWall(Vector2f vInput)
 
 	Player* pPlayer = GetPlayer();
 	Vector2f vVelocity = pPlayer->GetVelocity();
-	/*if (_isNextToWall(Vector2f(2.0f, 0.0f)))
-	{
-		pPlayer->GetSprite()->SetRotationZ(90.0f);
-	}
-	else
-	{
-		pPlayer->GetSprite()->SetRotationZ(-90.0f);
-	}*/
-	// x方向の速度は処理しないため、0にする
+	
+	// x方向の速度は禁止されたため、0にする
 	vVelocity.x = 0;
+	
+	// 入力方向によって、向きを設定し、スプライトの方向を調整する
+	{
+		// 上に移動したい場合
+		if (vInput.y > 0)
+		{
+			// 壁の法線が右に向いている場合
+			if (mCurrentSurface.normal == Vector2f(1.0f, 0.0f))
+			{
+				// 上に移動する場合 => キャラクターが左に向いている
+				pPlayer->SetDirection(Direction::Left);
+			}
+			// 壁の法線が左に向いている場合
+			else
+			{
+				// 上に移動する場合 => キャラクターが右に向いている
+				pPlayer->SetDirection(Direction::Right);
+			}
+
+		}
+		// 下に移動したい場合
+		else if(vInput.y < 0)
+		{
+			// 壁の法線が右に向いている場合
+			
+			if (mCurrentSurface.normal == Vector2f(1.0f, 0.0f))
+			{
+				// 下に移動する場合 => キャラクターが右に向いている
+				pPlayer->SetDirection(Direction::Right);
+			}
+			// 壁の法線が左に向いている場合
+			else
+			{
+				// 下に移動する場合 => キャラクターが左に向いている
+				pPlayer->SetDirection(Direction::Left);
+			}
+		}
+
+		// スプライトの向きを設定
+		_setSpriteRotationAndFlip(mCurrentSurface);
+	}
 
 	//摩擦による速度の減衰 
 	{
@@ -359,51 +446,35 @@ void StateMoving::_updateWall(Vector2f vInput)
 
 	pPlayer->SetVelocity(vVelocity);
 		
-	float CollisionSize = 40.0f;
+
 	Sprite* vSprite = pPlayer->GetSprite();
 	// 壁の隣にいない場合
-	if (!_isNextToWall())
+	if (_isOutsideSurface(pPlayer->GetPosition() + vVelocity))
 	{
-		if (vVelocity.y > 0)
+		// 上に移動している場合
+		if (vVelocity.y > 0.0f)
 		{
-			mMoveType = MoveType::Ground;
-			if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(10.0f, -10.0f), CollisionSize, CollisionSize)) {
-				vVelocity = Vector2f(vVelocity.y, vVelocity.x);
-			}
-			else if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(-10.0f, -10.0f), CollisionSize, CollisionSize)) 
-			{
-				vVelocity = Vector2f(-vVelocity.y, vVelocity.x);
-			}
-			vSprite->SetRotationZ(0.0f);
+			mNextSurface.type = SurfaceType::Ground;
+			// 法線の値を更新する　(↑)
+			mNextSurface.normal = Vector2f(0.0f, 1.0f);
 		}
-		else
+		else if(vVelocity.y < 0.0f)
 		{
-			mMoveType = MoveType::Ceiling;
-			if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(10.0f, 10.0f), CollisionSize, CollisionSize)) {
-				vVelocity = Vector2f(-vVelocity.y, vVelocity.x);
-			}
-			else if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(-10.0f, 10.0f), CollisionSize, CollisionSize))
-			{
-				vVelocity = Vector2f(vVelocity.y, vVelocity.x);
-			}
-			vSprite->SetRotationZ(180.0f);
+			mNextSurface.type = SurfaceType::Ceiling;
+			// 法線の値を更新する　(↓)
+			mNextSurface.normal = Vector2f(0.0f, -1.0f);
 		}
 	}
 	else 
 	{
-		if (vVelocity.y > 0 && _isSwitchTypeSpeed(vVelocity.y))
-		{
-			if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(0.0f, vVelocity.GetNormalized().y * CollisionSize / 4.0f), CollisionSize, CollisionSize)) {
-				mMoveType = MoveType::Ceiling;
-				vSprite->SetRotationZ(180.0f);
-			}
-		}
-		else if (vVelocity.y < 0 && _isSwitchTypeSpeed(vVelocity.y))
-		{
-			if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(0.0f, vVelocity.GetNormalized().y * CollisionSize / 4.0f), CollisionSize, CollisionSize)) {
-				mMoveType = MoveType::Ground;
-				vSprite->SetRotationZ(0.0f);
-			}
+		// 「壁」 とぶつかる、かつその「壁」に向かって移動する場合
+		if (GetMap()->IsInsideWall(pPlayer->GetPosition() + _getPlayerFacingVector() * TileDetectDistance, CollisionSize, CollisionSize)) {
+			
+			DebugLog("Is INside Wall");
+			// 元々の移動方向から「壁」の表面種類を判断して代入する
+			mNextSurface.type = (vVelocity.y > 0) ? SurfaceType::Ceiling : SurfaceType::Ground;
+			// 元々の移動方向から「壁」の法線を判断して代入する
+			mNextSurface.normal = (vVelocity.y > 0) ? Vector2f(0.0f, -1.0f) : Vector2f(0.0f, 1.0f);
 		}
 	}
 
@@ -425,6 +496,23 @@ void StateMoving::_updateCeiling(Vector2f vInput)
 	
 	// y方向の速度は処理しないため、0にする
 	vVelocity.y = 0;
+
+	// 入力方向によって、プレイヤーの向き情報とスプライトの向きを設定する
+	{
+		if (vInput.x >= 0)
+		{
+			// 天井移動の場合プレイヤーは既に180度回転したので
+			// 向きと入力方向が反対方向になる
+			pPlayer->SetDirection(Direction::Left);
+		}
+		else
+		{
+			pPlayer->SetDirection(Direction::Right);
+		}
+
+		// スプライトの向きを設定
+		_setSpriteRotationAndFlip(mCurrentSurface);
+	}
 
 	//摩擦による速度の減衰 
 	{
@@ -448,80 +536,43 @@ void StateMoving::_updateCeiling(Vector2f vInput)
 
 	pPlayer->SetVelocity(vVelocity);
 
-	float CollisionSize = 40.0f;
 	Sprite* vSprite = GetPlayer()->GetSprite();
-	if (!_isCeil())
+	if (!_isOutsideSurface(pPlayer->GetPosition() + vVelocity))
 	{
-		mMoveType = MoveType::Wall;
-		if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(10.0f, 10.0f), CollisionSize, CollisionSize)) {
-			vVelocity = Vector2f(vVelocity.y, -vVelocity.x);
-			vSprite->SetRotationZ(90.0f);
+		mNextSurface.type = SurfaceType::Wall;
+		const float HalfCollisionSize = CollisionSize / 2.0f;
+		// 左端にいる時場合
+		if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(HalfCollisionSize, HalfCollisionSize), CollisionSize, CollisionSize)) {
+			mNextSurface.normal = Vector2f(-1.0f, 0.0f);
 		}
-		else if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(-10.0f, 10.0f), CollisionSize, CollisionSize))
+
+		// 右端にいる時の場合
+		else if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(-HalfCollisionSize, HalfCollisionSize), CollisionSize, CollisionSize))
 		{
-			vVelocity = Vector2f(vVelocity.y, vVelocity.x);
-			vSprite->SetRotationZ(-90.0f);
+			mNextSurface.normal = Vector2f(1.0f, 0.0f);
 		}
 		
 	}
-	else if (_isSwitchTypeSpeed(vVelocity.x))
-	{
-		if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(vVelocity.GetNormalized().x * CollisionSize / 4.0f, 0.0f), CollisionSize, CollisionSize)) {
-			mMoveType = MoveType::Wall;
-			if (vVelocity.x > 0)
-			{
-				vSprite->SetRotationZ(90.0f);
-			}
-			else
-			{
-				vSprite->SetRotationZ(-90.0f);
-			}
-		}
-		
+
+	if (GetMap()->IsInsideWall(pPlayer->GetPosition() + Vector2f(vVelocity.GetNormalized().x * TileDetectDistance, 0.0f), CollisionSize, CollisionSize)) {
+		mNextSurface.type = SurfaceType::Wall;
+			
+		mNextSurface.normal = (vVelocity.x > 0) ? Vector2f(-1.0f, 0.0f) : Vector2f(1.0f, 0.0f);
 	}
+		
+	
 
 	_translate(vVelocity);
-}
-
-bool StateMoving::_isSwitchTypeSpeed(float fSpeed)
-{
-	return abs(fSpeed) > mMinStickVelocity;
-}
-
-Vector2f StateMoving::_getVectorByDirection(Direction direction)
-{
-	float CollisionWidth = 40.0f;
-
-	switch (direction)
-	{
-		case::Direction::Up:
-			return Vector2f(0, CollisionWidth / 2.0f);
-			break;
-
-		case::Direction::Right:
-			return Vector2f(CollisionWidth / 2.0f, 0);
-			break;
-
-		case::Direction::Down:
-			return Vector2f(0, -CollisionWidth / 2.0f);
-			break;
-
-		case::Direction::Left:
-			return Vector2f(-CollisionWidth / 2.0f, 0);
-			break;
-	}
 }
 
 // 今は地面にいるかを返す関数
 bool StateMoving::_isGround(Vector2f vVelocity)
 {
 	//衝突判定用の矩形の中心点を自分の足元にする 
-	Vector2f vTargetPos = GetPlayer()->GetPosition() + Vector2f(0, -10.0f);
-	//衝突判定用の矩形の幅と高さ 
-	float CollisionWidth = 40.0f;
-	float CollisionHeight = 1.0f;
+	Vector2f vTargetPos = GetPlayer()->GetPosition() + Vector2f(0, -TileDetectDistance);
+\
 	//壁に衝突していたら地面に立っている 
-	return GetMap()->IsInsideWall(vTargetPos, CollisionWidth, CollisionWidth);
+	return GetMap()->IsInsideWall(vTargetPos, CollisionSize, CollisionSize);
 }
 
 // 今は壁の隣にいるかを返す関数
@@ -529,21 +580,17 @@ bool StateMoving::_isNextToWall(Vector2f vVelocity)
 {
 	// プレイヤーの位置
 	Vector2f vPlayerPos = GetPlayer()->GetPosition();
-
-	//衝突判定用の矩形の幅と高さ 
-	float CollisionWidth = 40.0f;
-	float CollisionHeight = 1.0f;
 	
 	if (vVelocity.GetLength() > 0)
 	{
-		return GetMap()->IsInsideWall(vPlayerPos + vVelocity, CollisionWidth, CollisionWidth);
+		return GetMap()->IsInsideWall(vPlayerPos + vVelocity, CollisionSize, CollisionSize);
 	}
 	else {
 		
 		// 壁の右隣にいるか
-		bool isWallLeftSide = GetMap()->IsInsideWall(vPlayerPos + Vector2f(CollisionWidth/4.0f, 0.0f), CollisionWidth, CollisionWidth);
+		bool isWallLeftSide = GetMap()->IsInsideWall(vPlayerPos + Vector2f(TileDetectDistance, 0.0f), CollisionSize, CollisionSize);
 		// 壁の右隣にいるか
-		bool isWallRightSide = GetMap()->IsInsideWall(vPlayerPos + Vector2f(-CollisionWidth / 4.0f, 0.0f), CollisionWidth, CollisionWidth);
+		bool isWallRightSide = GetMap()->IsInsideWall(vPlayerPos + Vector2f(-TileDetectDistance, 0.0f), CollisionSize, CollisionSize);
 
 		return isWallRightSide || isWallLeftSide;
 	}
@@ -555,11 +602,238 @@ bool StateMoving::_isCeil(Vector2f vVelocity)
 	//衝突判定用の矩形の中心点を自分の足元にする 
 	Vector2f vTargetPos = GetPlayer()->GetPosition() + vVelocity;
 
-	//衝突判定用の矩形の幅と高さ 
-	float CollisionWidth = 40.0f;
-	float CollisionHeight = 1.0f;
-
 	//壁に衝突していたら地面に立っている 
-	return GetMap()->IsInsideWall(vTargetPos, CollisionWidth, CollisionWidth);
+	return GetMap()->IsInsideWall(vTargetPos, CollisionSize, CollisionSize);
 }
 
+// 表面外に出ているかを返す関数
+bool StateMoving::_isOutsideSurface(Vector2f vTargetPosition)
+{
+	// 壁の予想位置
+	Vector2f vDesireTilePosition = vTargetPosition + -mCurrentSurface.normal * CollisionSize;
+
+	// この位置が壁かどうかを判断する
+	return !GetMap()->IsInsideWall(vDesireTilePosition, CollisionSize, CollisionSize);
+}
+
+// 今プレイヤーが向かっている方向を返す関数
+Vector2f StateMoving::_getPlayerFacingVector()
+{
+	Direction playerDirection = GetPlayer()->GetDirection();
+	switch (mCurrentSurface.type)
+	{
+	// 地面移動の場合
+	case SurfaceType::Ground:
+		return playerDirection == Direction::Right ? Vector2f(1.0f, 0.0f) : Vector2f(-1.0f, 0.0f);
+		break;
+
+	// 壁移動の場合
+	case SurfaceType::Wall:
+		// 壁の法線が右に向いている場合
+		if (mCurrentSurface.normal.x > 0.5f)
+		{
+			// "右"に向いている => 下方向を向いている
+			// "左"に向いている => 上方向を向いている
+			return playerDirection == Direction::Right ? Vector2f(0.0f, -1.0f) : Vector2f(0.0f, 1.0f);
+		}
+		else
+		{
+			// "右"に向いている => 上方向を向いている
+			// "左"に向いている => 下方向を向いている
+			return playerDirection == Direction::Right ? Vector2f(0.0f, 1.0f) : Vector2f(0.0f, -1.0f);
+		}
+		break;
+
+	// 天井移動の場合
+	// キャラクターのが180度回転したので、地面移動の場合と違う
+	case SurfaceType::Ceiling:
+		return playerDirection == Direction::Right ? Vector2f(-1.0f, 0.0f) : Vector2f(1.0f, 0.0f);
+		break;
+
+	// 空中の場合、地面の場合と一緒
+	case SurfaceType::Air:
+		return playerDirection == Direction::Right ? Vector2f(1.0f, 0.0f) : Vector2f(-1.0f, 0.0f);
+		break;
+
+	}
+}
+
+// 次の表面に切り替える時の更新処理
+void StateMoving::_updateSurfaceTransition()
+{
+	// 表面の種類が同じ場合
+	// 切替なし
+	if (mCurrentSurface.type == mNextSurface.type && mCurrentSurface.normal == mNextSurface.normal)
+	{
+		DebugLog("SameSurface");
+		mIsSurfaceTransition = false;
+		return;
+	}
+
+
+	DebugLog("OnSurfaceSwitch");
+	// 切り替え時間をDeltaTime分減らす
+	mSurfaceTransitionTime -= Time_I->GetDeltaTime();
+
+	// 経過時間と必要な時間の比率
+	float timeRatio = (1.0f - (mSurfaceTransitionTime / mSurfaceTransitionRequireTime));
+
+	// 切り替える途中で移動させたくないため、速度を0にする。
+	GetPlayer()->SetVelocity(Vector2f(0.0f, 0.0f));
+
+	// プレイヤースプライト
+	Sprite* playerSprite = GetPlayer()->GetSprite();
+
+	// 回転したい角度は外角(270度)かを返す関数
+	// 例えば、以下の場合は外角です
+	/*
+		移動方向 --->
+		------------
+					|
+					| 次
+					| の
+					| 方
+					| 向
+					| ↓
+	*/
+
+	// プレイヤーの位置
+	Vector2f vPlayerPosition = GetPlayer()->GetPosition();
+	// プレイヤーの向き
+	Vector2f vFacingDirection = _getPlayerFacingVector();
+	bool bIsOuterCorner = (vFacingDirection.Dot(vFacingDirection, mNextSurface.normal) == 1);
+
+	// 外角の場合
+	if (bIsOuterCorner)
+	{
+		const float HalfTileSize = GetMap()->GetTileSize();
+		const float HalfCollisionSize = CollisionSize / 2.0f;
+
+		_setSpriteRotationAndFlip(mNextSurface);
+
+		Vector2f vStartPosition = originalPlayerPosition + vFacingDirection * (HalfCollisionSize*2);
+		Vector2f vEndPosition = vStartPosition + -mCurrentSurface.normal * HalfCollisionSize * 2.0f;
+
+		GetPlayer()->SetPosition(vPlayerPosition.Lerp(vStartPosition, vEndPosition, timeRatio));
+	}
+	else
+	{
+		_setSpriteRotationAndFlip(mNextSurface);
+	}
+	// 切り替え時間が経過したら
+	if (mSurfaceTransitionTime <= 0)
+	{
+		// 切り替えた表面種類を代入
+		mCurrentSurface = mNextSurface;
+		// 切り替え時間をリセット
+		mSurfaceTransitionTime = mSurfaceTransitionRequireTime;
+
+		// 切替許可をリセット
+		mIsSurfaceTransition = false;
+	}
+}
+
+// プレイヤーススプライトの向きを設定する
+void StateMoving::_setSpriteRotationAndFlip(Surface targetSurface)
+{
+	// この後によく使うため事前に変数として宣言・代入する
+	Player* pPlayer = GetPlayer();
+	Sprite* pPlayerSprite = pPlayer->GetSprite();
+
+	switch (targetSurface.type)
+	{
+	case SurfaceType::Ground:
+
+		// 回転しない
+		pPlayerSprite->SetRotationZ(0);
+		// プレイヤーが右に向いている場合
+		if (pPlayer->GetDirection() == Direction::Right)
+		{
+			pPlayerSprite->SetFlipX(false);
+			pPlayerSprite->SetFlipY(false);
+		}
+		// プレイヤーが左に向いている場合
+		else
+		{
+			pPlayerSprite->SetFlipX(true);
+			pPlayerSprite->SetFlipY(false);
+		}
+		break;
+
+	case SurfaceType::Wall:
+
+		// 壁の法線が右向きの場合
+		if (targetSurface.normal == Vector2f(1.0f, 0.0f))
+		{
+			// スプライトを時計回りに90ほど回転
+			pPlayerSprite->SetRotationZ(-90);
+
+			// プレイヤーが "右" に向いている場合
+			if (pPlayer->GetDirection() == Direction::Right)
+			{
+				pPlayerSprite->SetFlipX(false);
+				pPlayerSprite->SetFlipY(false);
+			}
+			// プレイヤーが "左" に向いている場合
+			else
+			{
+				pPlayerSprite->SetFlipX(false);
+				pPlayerSprite->SetFlipY(true);
+			}
+		}
+		// 壁の法線が左向きの場合
+		else
+		{
+			// スプライトを反時計回りに90ほど回転
+			pPlayerSprite->SetRotationZ(90);
+
+			// プレイヤーが "右" に向いている場合
+			if (pPlayer->GetDirection() == Direction::Right)
+			{
+				pPlayerSprite->SetFlipX(false);
+				pPlayerSprite->SetFlipY(false);
+			}
+			// プレイヤーが "左" に向いている場合
+			else
+			{
+				pPlayerSprite->SetFlipX(false);
+				pPlayerSprite->SetFlipY(true);
+			}
+		}
+
+		break;
+
+	case SurfaceType::Ceiling:
+
+		// スプライトを反時計回りに180ほど回転
+		pPlayerSprite->SetRotationZ(180);
+		// プレイヤーが右に向いている場合
+		if (pPlayer->GetDirection() == Direction::Right)
+		{
+			pPlayerSprite->SetFlipX(false);
+			pPlayerSprite->SetFlipY(false);
+		}
+		// プレイヤーが左に向いている場合
+		else
+		{
+			pPlayerSprite->SetFlipX(true);
+			pPlayerSprite->SetFlipY(false);
+		}
+		break;
+
+	case SurfaceType::Air:
+		// プレイヤーが右に向いている場合
+		if (pPlayer->GetDirection() == Direction::Right)
+		{
+			pPlayerSprite->SetFlipX(false);
+			pPlayerSprite->SetFlipY(false);
+		}
+		// プレイヤーが左に向いている場合
+		else
+		{
+			pPlayerSprite->SetFlipX(true);
+			pPlayerSprite->SetFlipY(false);
+		}
+		break;
+	}
+}

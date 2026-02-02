@@ -43,6 +43,9 @@
     <Filter Include="ソース ファイル\UI">
       <UniqueIdentifier>{0832ccbe-13b1-4104-860f-2ef4894f4558}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Player\State\StateMove">
+      <UniqueIdentifier>{95ca19ec-0897-443f-b32e-9043fbf2409a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\App.cpp">
@@ -70,9 +73,6 @@
       <Filter>ソース ファイル\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="Source\Player\State\StateMng.cpp">
-      <Filter>ソース ファイル\Player\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Player\State\StateMoving.cpp">
       <Filter>ソース ファイル\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="Source\Player\State\StateWater.cpp">
@@ -147,6 +147,12 @@
     <ClCompile Include="Source\Enemy\Archer.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Player\State\StateMoving.cpp">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\State\StateMove\StateMove.cpp">
+      <Filter>ソース ファイル\Player\State\StateMove</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App.h">
@@ -177,9 +183,6 @@
       <Filter>ソース ファイル\Player\State</Filter>
     </ClInclude>
     <ClInclude Include="Source\Player\State\StateMng.h">
-      <Filter>ソース ファイル\Player\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Player\State\StateMoving.h">
       <Filter>ソース ファイル\Player\State</Filter>
     </ClInclude>
     <ClInclude Include="Source\Player\State\StateWater.h">
@@ -262,6 +265,12 @@
     </ClInclude>
     <ClInclude Include="Source\Enemy\Archer.h">
       <Filter>ソース ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateMoving.h">
+      <Filter>ソース ファイル\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\State\StateMove\StateMove.h">
+      <Filter>ソース ファイル\Player\State\StateMove</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

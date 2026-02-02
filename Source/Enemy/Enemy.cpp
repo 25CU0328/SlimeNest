@@ -80,18 +80,6 @@ void Enemy::Update()
     //衝突形状の位置を更新 
     mCollider.SetPosition(mPosition);
 
-    //ダメージ時に加算する色（赤）の強さが0でなければ 
-    if (mDamagedColor > 0.0f) {
-        //0.25秒くらいで0に戻るように減算 
-        mDamagedColor -= Time_I->GetDeltaTime() * 4.0f;
-        //マイナスの値にならないように調整 
-        if (mDamagedColor < 0.0f) {
-            mDamagedColor = 0.0f;
-        }
-        //加算する赤色の強さを指定 
-        mSprite.SetAdditionalColor(mDamagedColor, 0.0f, 0.0f);
-    }
-
     switch (mState)
     {
     case EnemyState::Patrol:
